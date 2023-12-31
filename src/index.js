@@ -10,6 +10,7 @@ const path = require("path");
 const db = require("./models");
 const routes = require("./routes");
 const translationMiddleware = require("./translations");
+const ErrorHandler = require("./middleware's/errorHandler");
 
 // create app
 const app = express();
@@ -30,6 +31,7 @@ app.use("*", (req, res, next) => {
   // next(throw nee Er)
 });
 
+app.use(ErrorHandler);
 // create server
 const server = http.createServer(app);
 
