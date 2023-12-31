@@ -29,12 +29,15 @@ module.exports = {
       },
       is_free: {
         type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       price: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       discount: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       teacher_id: {
         type: Sequelize.INTEGER,
@@ -46,6 +49,7 @@ module.exports = {
       },
       discount_type: {
         type: Sequelize.ENUM("percentage", "fixed"),
+        defaultValue: "fixed",
       },
       createdAt: {
         allowNull: false,

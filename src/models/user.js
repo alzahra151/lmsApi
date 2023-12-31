@@ -11,12 +11,18 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.belongsTo(models.Role, { as: "role", foreignKey: "role_id" });
       User.belongsTo(models.Class, { as: "class", foreignKey: "class_id" });
-      User.hasMany(models.Comment);
-      User.hasMany(models.Rate);
-      User.hasMany(models.Course);
-      User.hasMany(models.OTP);
-      User.hasMany(models.Exam);
-      User.hasMany(models.Course);
+      User.hasMany(models.Comment, { foreignKey: "user_id" });
+      User.hasMany(models.Rate, { foreignKey: "user_id" });
+      User.hasMany(models.Rate, { foreignKey: "teacher_id" });
+      User.hasMany(models.Course, { foreignKey: "teacher_id" });
+      User.hasMany(models.OTP, { foreignKey: "user_id" });
+      User.hasMany(models.Exam, { foreignKey: "teacher_id" });
+      // User.hasMany(models.Exam, { foreignKey: "teacher_id" });
+      User.hasMany(models.StudentExam, { foreignKey: "student_id" });
+      User.hasMany(models.StudentExam, { foreignKey: "teacher_id" });
+      User.hasMany(models.StudentExamQuestions, { foreignKey: "teacher_id" });
+      User.hasMany(models.Enrollment, { foreignKey: "student_id" });
+      User.hasMany(models.Enrollment, { foreignKey: "teacher_id" });
     }
   }
   User.init(

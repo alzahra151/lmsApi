@@ -19,11 +19,15 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
+      duration: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
       exam_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Course",
+          model: "Exam",
           key: "id",
         },
       },
