@@ -51,6 +51,10 @@ module.exports = {
         type: Sequelize.ENUM("percentage", "fixed"),
         defaultValue: "fixed",
       },
+      status: {
+        type: Sequelize.ENUM("pending", "active", "inactive", "rejected"),
+        defaultValue: "pending",
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
