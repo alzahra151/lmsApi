@@ -21,11 +21,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(routes);
 
-app.use("*", (req, res, next) => {
-  const error = new Error("METHOD NOT ALLOWED!!");
-  next(error);
-  // next(throw nee Er)
-});
+// app.use("*", (req, res, next) => {
+//   const error = new Error("METHOD NOT ALLOWED!!");
+//   next(error);
+//   // next(throw nee Er)
+// });
 
 // create server
 const server = http.createServer(app);

@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     degree: DataTypes.INTEGER,
     student_id: DataTypes.INTEGER,
     question_id: DataTypes.INTEGER,
-    is_correct: DataTypes.BOOLEAN
+    is_correct: DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'StudentExamQuestions',
