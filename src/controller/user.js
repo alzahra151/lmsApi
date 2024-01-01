@@ -41,18 +41,15 @@ async function getAllusers(req, res, next) {
     }
 }
 async function login(req, res, next) {
-    console.log(req.body)
-    const { email, password } = req.body
-    try {
-        const user = await db.User.findOne({ where: { email: email } })
-        if (!user) {
-            // res.status(401).json({ message: "User not found" })
-            throw new ApiError("User not found", 401)
 
+    const { mobile, password } = req.body
+    try {
+        const user = await db.User.findOne({ where: { mobile: mobile } })
+        if (!user) {
+            throw new ApiError("User not found", 401)
         } else {
             const verfiypassword = await compareSync(password, user.password)
             if (!verfiypassword) {
-                // res.status(401).json({ message: "password not match" })
                 throw new ApiError("Password not match", 401)
             } else {
                 const token = jwt.sign({ id: user.id, role: user.role }

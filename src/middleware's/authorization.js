@@ -15,8 +15,8 @@ async function authorization(req, res, next) {
     jwt.verify(tokenValue, process.env.SECRET_KEY, (error, user) => {
       if (error) throw new ApiError("Invalid or expired token", 401);
       req.user = user
-    })
 
+    })
     next();
   } catch (error) {
     next(error);
