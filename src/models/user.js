@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const bcrypt = require("bcrypt")
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -12,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsTo(models.Role, { as: "role", foreignKey: "role_id" });
       User.belongsTo(models.Class, { as: "class", foreignKey: "class_id" });
       User.hasMany(models.Comment, { foreignKey: "user_id" });
-      User.hasMany(models.Rate, { foreignKey: "user_id" });
+      User.hasMany(models.Rate, { foreignKey: "user_id" }, { onDelete: 'CASCADE' });
       User.hasMany(models.Rate, { foreignKey: "teacher_id" });
       User.hasMany(models.Course, { foreignKey: "teacher_id" });
       User.hasMany(models.OTP, { foreignKey: "user_id" });
@@ -41,6 +42,11 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "User",
     }
+
   );
+  User.beforeCreate(async (user) => {
+    const salt = await bcrypt.genSaltSync(10, 'a');
+    user.password = bcrypt.hashSync(user.password, salt);
+  })
   return User;
 };
