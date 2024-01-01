@@ -9,7 +9,7 @@ const upload = require("../../controller/multer")
 adminRoutes.route("/courses").get(adminController.getAllcourses);
 
 adminRoutes.route("/users")
-    .get(authorization, adminController.getAllusers);
+    .get(authorization, userController.getAllusers);
 adminRoutes.route("/add-user")
     .post(authorization, upload.single('photo'), userController.addUser)
 adminRoutes.route("/user/:id")

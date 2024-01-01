@@ -15,7 +15,31 @@ async function addUser(req, res, next) {
         next(err)
     }
 }
-
+async function getAllusers(req, res, next) {
+    try {
+        const users = await db.User.findAll(
+            {
+                include: [
+                    {
+                        model: db.Class,
+                        as: "class",
+                    },
+                    {
+                        model: db.Role,
+                        as: "role",
+                    },
+                ],
+                attributes: {
+                    exclude: ["password"],
+                },
+            },
+            { raw: true }
+        );
+        return new ApiResponser(res, { users });
+    } catch (error) {
+        next(error);
+    }
+}
 async function login(req, res, next) {
     console.log(req.body)
     const { email, password } = req.body
@@ -92,5 +116,6 @@ module.exports = {
     addUser,
     login,
     getUserById,
-    updateUser
+    updateUser,
+    getAllusers
 }

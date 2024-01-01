@@ -63,32 +63,8 @@ async function getAllcourses(req, res, next) {
     next(error);
   }
 }
-async function getAllusers(req, res, next) {
-  try {
-    const users = await db.User.findAll(
-      {
-        include: [
-          {
-            model: db.Class,
-            as: "class",
-          },
-          {
-            model: db.Role,
-            as: "role",
-          },
-        ],
-        attributes: {
-          exclude: ["password"],
-        },
-      },
-      { raw: true }
-    );
-    return new ApiResponser(res, { users });
-  } catch (error) {
-    next(error);
-  }
-}
+
 module.exports = {
   getAllcourses,
-  getAllusers,
+
 };
