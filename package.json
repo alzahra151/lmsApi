@@ -17,6 +17,7 @@
     "cookies-parser": "^1.2.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
     "i18next": "^23.7.13",
     "i18next-express-middleware": "^2.0.0",
