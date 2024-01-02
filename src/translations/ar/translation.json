@@ -4,6 +4,7 @@
     "mobileRequiredMsg":"الرجاء ادخال رقم الهاتف",
     "passwordValidationMsg":"كلمة المرور يجب ان تكون علي الاقل 6 احرف" ,
     "nameValidationMsg":"الاسم يجب ان يكون ما بين 3 و15 حرف",
-    "emailValidMsg":"الايميل غبر صحيح"
+    "emailValidMsg":"الايميل غبر صحيح",
+   "invalidType":"نوع الصورة غبر صحيح "
 
 }

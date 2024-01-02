@@ -4,13 +4,10 @@ const ApiError = require("../helpers/apiError")
 const { compareSync } = require("bcrypt")
 const ApiResponser = require("../helpers/apiResponser")
 const jwt = require("jsonwebtoken")
-const { validationResult } = require('express-validator')
 
 async function addUser(req, res, next) {
     const userData = req.body
-    const dataErrors = validationResult(req)
     try {
-        if (!dataErrors.isEmpty()) throw new ApiError(dataErrors.array(), 401)
         if (req.file) userData.photo = `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}`
         const user = await db.User.create(userData)
         return new ApiResponser(res, { user })
@@ -46,10 +43,8 @@ async function getAllusers(req, res, next) {
 async function login(req, res, next) {
     const { mobile, password } = req.body
 
-    console.log(req.language)
-    const dataErrors = validationResult(req)
+    console.log(req.body)
     try {
-        if (!dataErrors.isEmpty()) throw new ApiError(dataErrors.array(), 401)
         const user = await db.User.findOne({ where: { mobile: mobile } })
         if (!user) {
             throw new ApiError("User not found", 401)

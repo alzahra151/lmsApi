@@ -5,7 +5,7 @@ const http = require("http");
 const cors = require("cors");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
-
+const bodyParser = require('body-parser')
 const path = require("path");
 const db = require("./models");
 const routes = require("./routes");
@@ -22,7 +22,8 @@ app.set(express.static(path.join(__dirname, "public")));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
 app.use(translationMiddleware);
 
 app.use(routes);

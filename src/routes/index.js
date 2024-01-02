@@ -3,10 +3,10 @@ const adminRoutes = require("./admin");
 const routes = Router();
 const studentRoutes = require("./student/studentRoutes");
 const userController = require("../controller/user")
-const { loginValidator } = require("../middleware's/validation/userValidation")
+const { loginValidator, validate } = require("../middleware's/validation/userValidation")
 
 routes.use("/admin", adminRoutes);
 routes.use("/", studentRoutes);
-routes.route("/login").post(loginValidator(), userController.login)
+routes.route("/login").post(loginValidator(), validate, userController.login)
 
 module.exports = routes;
