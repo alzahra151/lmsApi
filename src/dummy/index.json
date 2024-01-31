@@ -85,7 +85,7 @@
             "price": "150",
             "discount": "25",
             "discount_type": "fixed",
-            "teacher_id": 3
+            "teacher_id": 16
         }
     ],
     "lessons": [
@@ -94,7 +94,7 @@
             "alt_title": "",
             "description": "تعد اللغة العربية واحدة من أجمل وأغنى اللغات في العالم، وتحمل تاريخاً غنياً من الأدب والثقافة. إذا كنت ترغب في اكتساب مهارات اللغة العربية، فإن دورة التعلم التالية ستكون خيارًا مثاليًا لك.",
             "alt_description": "",
-            "course_id": 1,
+            "course_id": 4,
             "video_url": "",
             "duration": 300,
             "is_free": true
@@ -105,19 +105,19 @@
             "file": "assets/attachments/file-1.pdf",
             "file_type": "application/pdf",
             "file_size": 0,
-            "lesson_id": 1
+            "lesson_id": 4
         },
         {
             "file": "assets/attachments/file-2.pdf",
             "file_type": "application/pdf",
             "file_size": 0,
-            "lesson_id": 1
+            "lesson_id": 4
         },
         {
             "file": "assets/attachments/file-3.pdf",
             "file_type": "application/pdf",
             "file_size": 0,
-            "lesson_id": 1
+            "lesson_id": 4
         }
     ]
 }

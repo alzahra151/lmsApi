@@ -1,7 +1,7 @@
 const { query, param, body, validationResult } = require("express-validator");
 const db = require("../../models");
 
-const addCourseValidator = () => {
+const addLessonValidator = () => {
   return [
     body("title")
       .notEmpty()
@@ -29,54 +29,46 @@ const addCourseValidator = () => {
       .matches(/^[\p{Script=Arabic}]+$/u)
       .withMessage("alt_description must be all string "),
 
-    body("start_date")
-      .isDate()
-      .withMessage("the end date must be data type of date"),
 
-    body("end_date")
-      .isDate()
-      .withMessage("the end date must be data type of date"),
+    body("course_id")
+      .isInt()
+      .withMessage("course_id must be number")
+      .custom(async (value) => {
+        const course = await db.Course.findByPk(value);
+        if (!course) {
+          throw new Error("Invalid course_id");
+        }
+      }),
+
+    body("video_url")
+      .notEmpty()
+      .withMessage("video url must be not empty ")
+      .isString()
+      .withMessage("video must be all string")
+      .matches(/^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})(\/\S*)?$/)
+      .withMessage("video url must be all string and correct url"),
+
+    body("duration").isInt().withMessage("duration must be number "),
 
     body("is_free")
       .isBoolean()
       .withMessage("is_free must be boolean data type "),
 
-    body("price").isInt().withMessage("price must be number"),
 
-    body("discount").isInt().withMessage("discount must be number "),
-
-    body("discount_type")
-      .isIn(["percentage", "fixed"])
-      .withMessage("discount_type must be either 'percentage' or 'fixed' "),
-
-    body("status")
-      .isIn(["pending", "active", "inactive", "rejected"])
-      .withMessage(
-        "status must be either 'pending' or 'active' or 'inactive' or 'rejected'"
-      ),
-
-    body("teacher_id")
-      .isInt()
-      .withMessage("teacher_id must be number")
-      .custom(async (value) => {
-        const user = await db.User.findByPk(value);
-        if (!user) {
-          throw new Error("Invalid teacher_id");
-        }
-      }),
+   
   ];
 };
 
-const updateCourseValidator = () => {
+const updateLessonValidator = () => {
   return [
     param('id')
     .custom(async (value) => {
       if (!Number.isInteger(Number(value))) {
-        throw new Error("Course id must be a number");
+        throw new Error("Lesson id must be a number");
       }
-      const course = await db.Course.findByPk(value);
-      if (!course) {
-        throw new Error("Course not found");
+      const lesson = await db.Lesson.findByPk(value);
+      if (!lesson) {
+        throw new Error("lesson not found");
       }
     })
     ,body("title")
@@ -109,60 +101,47 @@ const updateCourseValidator = () => {
       .matches(/^[\p{Script=Arabic}]+$/u)
       .withMessage("alt_description must be all string "),
 
-    body("start_date")
+    body("course_id")
+      .isInt()
+      .withMessage("course_id must be number")
       .optional()
-      .isDate()
-      .withMessage("the start date must be data type of date"),
+      .custom(async (value) => {
+        const course = await db.Course.findByPk(value);
+        if (!course) {
+          throw new Error("Invalid course_id");
+        }
+      }),
 
-    body("end_date")
-      .optional()
-      .isDate()
-      .withMessage("the end date must be data type of date"),
+    body("video_url")
+      .notEmpty()
+      .withMessage("video url must be not empty ")
+      .isString()
+      .withMessage("video must be all string")
+      .matches(/^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})(\/\S*)?$/)
+      .withMessage("video url must be all string and correct url"),
+
+    body("duration").isInt().withMessage("duration must be number "),
 
     body("is_free")
-      .optional()
       .isBoolean()
       .withMessage("is_free must be boolean data type "),
 
-    body("price").optional().isInt().withMessage("price must be number"),
+   
 
-    body("discount").optional().isInt().withMessage("discount must be number "),
-
-    body("discount_type")
-      .optional()
-      .isIn(["percentage", "fixed"])
-      .withMessage("discount_type must be either 'percentage' or 'fixed' "),
-
-    body("status")
-      .optional()
-      .isIn(["pending", "active", "inactive", "rejected"])
-      .withMessage(
-        "status must be either 'pending' or 'active' or 'inactive' or 'rejected'"
-      ),
-
-    body("teacher_id")
-      .isInt()
-      .withMessage("teacher_id must be number")
-      .optional()
-      .custom(async (value) => {
-        const user = await db.User.findByPk(value);
-        if (!user) {
-          throw new Error("Invalid teacher_id");
-        }
-      }),
+   
   ];
 };
 
-const deleteCousreValidator = () =>{
+const deleteLessonValidator = () =>{
   return [
     param('id')
     .custom(async (value) => {
       if (!Number.isInteger(Number(value))) {
-        throw new Error("Course id must be a number");
+        throw new Error("Lesson id must be a number");
       }
-      const course = await db.Course.findByPk(value);
-      if (!course) {
-        throw new Error("Course not found");
+      const lesson = await db.Lesson.findByPk(value);
+      if (!lesson) {
+        throw new Error("Lesson not found");
       }
     })
   ];
@@ -175,4 +154,4 @@ const validate = (req, res, next) => {
   }
   return res.status(422).json({success: false, errors: errors.array() });
 };
-module.exports = { addCourseValidator, updateCourseValidator, deleteCousreValidator, validate };
+module.exports = { addLessonValidator, updateLessonValidator, deleteLessonValidator, validate };

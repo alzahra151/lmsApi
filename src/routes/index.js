@@ -8,6 +8,10 @@ const rateController = require("../controller/reactionsController/rate")
 const authorization = require("../middleware's/authorization");
 const { loginValidator, validate } = require("../middleware's/validation/userValidation")
 
+const courseRoutes = require("./course/courseRoutes");
+
+const lessonRoutes = require("./lesson/lessonRoutes")
+
 routes.use("/admin", adminRoutes);
 routes.use("/", studentRoutes);
 routes.route("/login").post(loginValidator(), validate, userController.login)
@@ -18,5 +22,8 @@ routes.route("/comment-replays").get(commentController.getCommentReplies)
 routes.route("/comment/:comment_id").delete(authorization, commentController.deleteComment)
 // rate routes
 routes.route("/rates/:course_id").get(rateController.getCourseRates)
+
+routes.use("/courses", courseRoutes);
+routes.use("/lessons", lessonRoutes);
 
 module.exports = routes;
