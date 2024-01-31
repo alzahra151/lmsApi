@@ -18,6 +18,28 @@ async function addRate(req, res, next) {
         next(error)
     }
 }
+async function getAllrates(req, res, next) {
+    try {
+        const rates = await db.Rate.findAll({
+            include: [
+                {
+                    model: db.Course,
+                    as: 'course',
+                },
+                {
+                    model: db.User,
+                    as: 'user',
+                    exclude: ['password']
+                },
+
+            ],
+        }
+        )
+        return new ApiResponser(res, { rates })
+    } catch (err) {
+        next(err)
+    }
+}
 async function getCourseRates(req, res, next) {
     const courseId = req.params.course_id
     try {
@@ -56,8 +78,20 @@ async function updateRate(req, res, next) {
     }
 
 }
+async function deleteRate(req, res, next) {
+    const rateId = req.params.comment_id
+    try {
+        const deletedComment = await db.Comment.findByPk(rateId)
+        await deletedComment.destroy()
+        return new ApiResponser(res, req.t("sucessDelete"))
+    } catch (err) {
+        next(err)
+    }
+}
 module.exports = {
     getCourseRates,
     addRate,
-    updateRate
+    updateRate,
+    getAllrates,
+    deleteRate
 }

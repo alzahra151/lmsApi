@@ -46,17 +46,6 @@ async function getEnrollements(req, res, next) {
         next(err)
     }
 }
-async function updateEnrollment(req, res, next) {
-    const id = req.params.id
-    const data = req.body
-    try {
-        const [updatedRowscount, updatedRows] = await db.Enrollment.update(data, { where: { id: id } })
-        if (updatedRowscount == 0) throw new ApiError("Enrollment not found", 404)
-        return new ApiResponser(res, { updatedRowscount })
-    } catch (error) {
-        next(error)
-    }
-}
 
 async function getCourseEnrollments(req, res, next) {
     const courseId = req.params.id
@@ -87,11 +76,22 @@ async function getCourseEnrollments(req, res, next) {
 async function deleteEnrollment(req, res, next) {
     const id = req.params.id
     try {
-        const deletedEnrollment = await db.Enrollment.findOne({ where: { id: id } })
+        const deletedEnrollment = await db.Enrollment.findByPk(id)
         await deletedEnrollment.destroy()
         return ApiResponser(res, "Enrollment deleted successfully")
     } catch (err) {
         next(err)
+    }
+}
+async function updateEnrollment(req, res, next) {
+    const id = req.params.id
+    const data = req.body
+    try {
+        const [updatedRowscount, updatedRows] = await db.Enrollment.update(data, { where: { id: id } })
+        if (updatedRowscount == 0) throw new ApiError("Enrollment not found", 404)
+        return new ApiResponser(res, { updatedRowscount })
+    } catch (error) {
+        next(error)
     }
 }
 module.exports = {

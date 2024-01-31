@@ -61,7 +61,7 @@ async function deleteComment(req, res, next) {
             }
         })
         await deletedComment.destroy()
-        return new ApiResponser(res, "comment deleted successfully")
+        return new ApiResponser(res, req.t("sucessDelete"))
     } catch (err) {
         next(err)
     }
