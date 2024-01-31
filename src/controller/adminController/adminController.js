@@ -45,13 +45,13 @@ async function getAllcourses(req, res, next) {
               "duration",
             ],
             [
-              db.Sequelize.fn("SUM", db.Sequelize.col("rates.rating")),
+              db.Sequelize.fn("AVG", db.Sequelize.col("rates.rating")),
               "rating",
             ],
-            [
-              db.Sequelize.fn("COUNT", db.Sequelize.col("rates.course_id")),
-              "rates",
-            ],
+            // [
+            //   db.Sequelize.fn("COUNT", db.Sequelize.col("rates.course_id")),
+            //   "rates",
+            // ],
           ],
           exclude: ["lessons"],
         },
