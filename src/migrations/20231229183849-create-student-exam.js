@@ -26,13 +26,19 @@ module.exports = {
           key: "id",
         },
       },
+      status: {
+        type: Sequelize.ENUM("completed", "paused", "started"),
+        defaultValue: "started",
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
     });
   },

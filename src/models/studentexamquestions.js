@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "question_id",
         as: "question",
       });
+      StudentExamQuestions.belongsTo(models.Answer, {
+        foreignKey: "answer_id",
+        as: "answer",
+      });
     }
   }
   StudentExamQuestions.init(
@@ -30,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       duration: DataTypes.INTEGER,
       student_id: DataTypes.INTEGER,
       question_id: DataTypes.INTEGER,
+      answer_id: DataTypes.INTEGER,
       is_correct: DataTypes.BOOLEAN,
     },
     {

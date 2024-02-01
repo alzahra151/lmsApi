@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Exam.belongsTo(models.Class, { foreignKey: "class_id", as: "class" });
       Exam.belongsTo(models.User, { foreignKey: "teacher_id", as: "teacher" });
       Exam.hasMany(models.Question, { foreignKey: "exam_id", as: "questions" });
+      Exam.hasMany(models.Answer, { foreignKey: "exam_id" });
     }
   }
   Exam.init(

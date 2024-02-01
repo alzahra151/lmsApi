@@ -1,10 +1,14 @@
 {
     "success": "تم جلب البيانات بنجاح",
-    "mobileValidationMsg":"رقم الهاتف غير صحيح",
-    "mobileRequiredMsg":"الرجاء ادخال رقم الهاتف",
-    "passwordValidationMsg":"كلمة المرور يجب ان تكون علي الاقل 6 احرف" ,
-    "nameValidationMsg":"الاسم يجب ان يكون ما بين 3 و15 حرف",
-    "emailValidMsg":"الايميل غبر صحيح",
-   "invalidType":"نوع الصورة غبر صحيح "
-
+    "mobileValidationMsg": "رقم الهاتف غير صحيح",
+    "mobileRequiredMsg": "الرجاء ادخال رقم الهاتف",
+    "passwordValidationMsg": "كلمة المرور يجب ان تكون علي الاقل 6 احرف",
+    "nameValidationMsg": "الاسم يجب ان يكون ما بين 3 و15 حرف",
+    "emailValidMsg": "الايميل غبر صحيح",
+    "invalidType": "نوع الصورة غبر صحيح ",
+    "examCreatedMsg": "تم انشاء الامتحان بنجاح",
+    "invalidId": "هذا العنصر غير موجود",
+    "examIsRequired": "الامتحان مطلوب",
+    "invalidExam": "الامتحان المحدد غير موجود",
+    "studentExamExisted": "تم التسجيل في  الامتحان من قبل , لا يمكن التسجيل في الامتحان اكثر من مره"
 }

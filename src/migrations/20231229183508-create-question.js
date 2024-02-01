@@ -31,13 +31,29 @@ module.exports = {
           key: "id",
         },
       },
+      answers: [
+        {
+          title: {
+            type: Sequelize.STRING,
+          },
+          alt_title: {
+            type: Sequelize.STRING,
+          },
+          is_correct: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false,
+          },
+        },
+      ],
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
     });
   },
