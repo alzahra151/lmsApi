@@ -5,5 +5,9 @@
     "passwordValidationMsg":"Password must be at least 6 characters long",
     "nameValidationMsg":"Name must be between 3 and 15 characters",
     "emailValidMsg":"Email is not valid",
-     "invalidType":"Invalid image type"
+     "invalidType":"Invalid image type",
+     "notFoundUser":"User not found",
+     "wrongPassword":"Password not match",
+     "sucessDelete":"Data deletd successfully"
+
 }

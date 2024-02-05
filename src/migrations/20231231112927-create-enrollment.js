@@ -40,6 +40,7 @@ module.exports = {
       },
       is_free: {
         type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       discount: {
         type: Sequelize.INTEGER,

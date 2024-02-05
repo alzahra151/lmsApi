@@ -1,6 +1,7 @@
 const db = require("../../models");
 const ApiResponser = require("../../helpers/apiResponser");
 const ApiError = require("../../helpers/apiError");
+const { Op } = require("sequelize");
 
 async function createNewExam(req, res, next) {
   try {
@@ -10,7 +11,7 @@ async function createNewExam(req, res, next) {
       start_date,
       end_date,
       duration,
-      lesson_id,
+      lesson_ids,
       course_id,
       class_id,
       teacher_id,
@@ -24,19 +25,29 @@ async function createNewExam(req, res, next) {
       teacher_id = id;
     }
 
-    const [teacher, course, currentClass, lesson] = await Promise.all([
+    const [teacher, course, currentClass, lessons] = await Promise.all([
       db.User.findOne({ where: { id: teacher_id, user_type: "teacher" } }),
       db.Course.findOne({ where: { id: course_id } }),
       db.Class.findOne({ where: { id: class_id } }),
-      db.Lesson.findOne({ where: { id: lesson_id } }),
+      db.Lesson.findAll({ where: { id: { [Op.in]: lesson_ids } } }),
     ]);
 
-    if (!teacher || !course || !currentClass || !lesson)
+    const filterNotFoundLessons = lesson_ids?.filter((id) =>
+      lessons.some((lesson) => lesson.id !== id)
+    );
+    const lesson_ids_errors = filterNotFoundLessons.reduce((obj, item) => {
+      obj[item] = req.t("invalidId");
+      return obj;
+    }, {});
+
+    if (!teacher || !course || !currentClass || !!filterNotFoundLessons.length)
       throw new ApiError(
         {
-          lesson_id: !lesson ? req.t("invalidId") : undefined,
+          lesson_ids: !!filterNotFoundLessons.length
+            ? lesson_ids_errors
+            : undefined,
           course_id: !course ? req.t("invalidId") : undefined,
-          class_id: !currentClass ? req.t("invalidId") : undefined,
+          class_ids: !currentClass ? req.t("invalidId") : undefined,
           teacher_id: !teacher ? req.t("invalidId") : undefined,
         },
         422
@@ -50,9 +61,8 @@ async function createNewExam(req, res, next) {
           start_date: start_date ? new Date(start_date) : null,
           end_date: end_date ? new Date(end_date) : null,
           duration: parseFloat(duration || 0),
-          lesson_id,
-          course_id,
           class_id,
+          course_id,
           teacher_id,
         },
         { transaction }
@@ -88,7 +98,19 @@ async function createNewExam(req, res, next) {
         transaction,
       });
 
-      return { exam, questions: createdQuestions, answers: createdAnswers };
+      const examLessons = lessons.map((item) => ({
+        lesson_id: item.id,
+        exam_id: exam?.id,
+      }));
+
+      await db.ExamLesson.bulkCreate(examLessons, { transaction });
+
+      return {
+        exam,
+        questions: createdQuestions,
+        answers: createdAnswers,
+        examLessons,
+      };
     });
 
     return new ApiResponser(res, result);
@@ -220,6 +242,8 @@ async function correctExam(req, res, next) {
       { raw: true }
     );
 
+    console.log(questions);
+
     if (!studentExam) throw new ApiError(req.t("invalidExam"), 422);
 
     const result = await db.sequelize.transaction(async (transaction) => {
@@ -227,7 +251,7 @@ async function correctExam(req, res, next) {
       const examQuestions = await Promise.all(
         questions?.map(async (question) => {
           const originQuestion = studentExam.exam?.questions?.find(
-            (item) => item.id == question?.question_id
+            (item) => item.id == question?.id
           );
           const answer = originQuestion?.answers?.find(
             (item) => item.id == question.answer_id
@@ -245,7 +269,7 @@ async function correctExam(req, res, next) {
               duration: question.duration,
               answer_id: question.answer_id,
             },
-            { where: { id: question.id, student_id: id } },
+            { where: { question_id: question?.id, student_id: id } },
             { transaction }
           );
         })
@@ -284,7 +308,7 @@ async function getStudentExam(req, res, next) {
           model: db.User,
           as: "teacher",
           attributes: {
-            exclude: ["password"],
+            exclude: ["password", "role_id"],
           },
         },
         {
@@ -301,13 +325,15 @@ async function getStudentExam(req, res, next) {
             {
               model: db.Question,
               as: "question",
-              include: [{
-                model: db.Answer,
-                as: "answers",
-                where: {
-                  is_correct: true
-                }
-              }]
+              include: [
+                {
+                  model: db.Answer,
+                  as: "answers",
+                  where: {
+                    is_correct: true,
+                  },
+                },
+              ],
             },
             {
               model: db.Answer,
@@ -316,7 +342,32 @@ async function getStudentExam(req, res, next) {
           ],
         },
       ],
+      attributes: {
+        include: [
+          [
+            db.sequelize.fn("SUM", db.sequelize.col("questions.duration")),
+            "duration",
+          ],
+          [
+            db.sequelize.fn(
+              "SUM",
+              db.sequelize.col("questions.question.duration")
+            ),
+            "exam_duration",
+          ],
+          [
+            db.sequelize.fn(
+              "SUM",
+              db.sequelize.col("questions.question.degree")
+            ),
+
+            "exam_degree",
+          ],
+        ],
+      },
     });
+
+    if (!studentExam) throw new ApiError(req.t("invalidExam"), 404);
 
     return new ApiResponser(res, studentExam);
   } catch (error) {
@@ -324,4 +375,47 @@ async function getStudentExam(req, res, next) {
   }
 }
 
-module.exports = { createNewExam, startExam, correctExam, getStudentExam };
+async function getExam(req, res, next) {
+  try {
+    const { id } = req.params;
+    if (!id) throw new ApiError(req.t("invalidId"), 422);
+
+    const exam = await db.Exam.findByPk(id, {
+      include: [
+        {
+          model: db.Class,
+          as: "class",
+        },
+        {
+          model: db.Course,
+          as: "course",
+        },
+        {
+          model: db.User,
+          as: "teacher",
+          attributes: {
+            exclude: ["password", "role_id"],
+          },
+        },
+        {
+          model: db.Lesson,
+          as: "lessons",
+        },
+      ],
+    });
+
+    if (!exam) throw new ApiError(req.t("invalidId"), 404);
+
+    return new ApiResponser(res, { exam });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = {
+  createNewExam,
+  startExam,
+  correctExam,
+  getStudentExam,
+  getExam,
+};

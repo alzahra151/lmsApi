@@ -18,6 +18,7 @@ module.exports = {
       },
       degree: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       student_id: {
         type: Sequelize.INTEGER,
@@ -29,6 +30,14 @@ module.exports = {
       status: {
         type: Sequelize.ENUM("completed", "paused", "started"),
         defaultValue: "started",
+      },
+      started_at: {
+        allowNull: true,
+        type: Sequelize.DATE,
+      },
+      ended_at: {
+        allowNull: true,
+        type: Sequelize.DATE,
       },
       createdAt: {
         allowNull: false,

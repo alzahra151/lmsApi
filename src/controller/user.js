@@ -47,11 +47,11 @@ async function login(req, res, next) {
     try {
         const user = await db.User.findOne({ where: { mobile: mobile } })
         if (!user) {
-            throw new ApiError("User not found", 401)
+            throw new ApiError(req.t("notFoundUser"), 401)
         } else {
             const verfiypassword = await compareSync(password, user.password)
             if (!verfiypassword) {
-                throw new ApiError("Password not match", 401)
+                throw new ApiError(req.t("wrongPassword"), 401)
             } else {
                 const token = jwt.sign({ id: user.id, role: user.role }
                     , process.env.SECRET_KEY,
@@ -86,7 +86,7 @@ async function getUserById(req, res, next) {
                 },
             },
         )
-        if (!user) throw new ApiError("user not found", 404)
+        if (!user) throw new ApiError(req.t("notFoundUser"), 404)
         return new ApiResponser(res, { user })
     } catch (error) {
         next(error)
@@ -103,7 +103,7 @@ async function updateUser(req, res, next) {
         if (req.file) newUserData.photo = `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}`
 
         const [updatedRowscount, updatedRows] = await db.User.update(newUserData, { where: { id: userId } })
-        if (updatedRowscount == 0) throw new ApiError("user not found", 404)
+        if (updatedRowscount == 0) throw new ApiError(req.t("notFoundUser"), 404)
         return new ApiResponser(res, { updatedRowscount })
 
     } catch (error) {

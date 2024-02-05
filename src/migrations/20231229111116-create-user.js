@@ -23,6 +23,7 @@ module.exports = {
       },
       user_type: {
         type: Sequelize.ENUM("admin", "student", "teacher", "admin_user"),
+        defaultValue: "admin",
       },
       photo: {
         type: Sequelize.TEXT,

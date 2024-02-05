@@ -27,10 +27,23 @@ module.exports = (sequelize, DataTypes) => {
   StudentExam.init(
     {
       exam_id: DataTypes.INTEGER,
-      degree: DataTypes.INTEGER,
+      degree: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
       student_id: DataTypes.INTEGER,
       teacher_id: DataTypes.INTEGER,
-      status: DataTypes.ENUM("completed", "paused", "started"),
+      status: {
+        type: DataTypes.ENUM("completed", "paused", "started"),
+        defaultValue: "started",
+      },
+      started_at: {
+        type: DataTypes.DATE,
+        defaultValue: new Date(),
+      },
+      ended_at: {
+        type: DataTypes.DATE,
+      },
     },
     {
       sequelize,
