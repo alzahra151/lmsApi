@@ -4,7 +4,6 @@ const studentController = require("../../controller/studentController/studentCon
 
 studentRoutes.get("/courses", studentController.getAllCourses);
 studentRoutes.get("/courses/:id", studentController.getCourseById);
-// rate routes
 
 
 module.exports = studentRoutes;
