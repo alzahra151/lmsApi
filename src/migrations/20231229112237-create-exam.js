@@ -25,7 +25,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
-
+      exam_type: {
+        type: Sequelize.ENUM("mcq"),
+        defaultValue: "mcq",
+      },
       lesson_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
@@ -61,10 +64,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
     });
   },

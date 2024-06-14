@@ -1,15 +1,43 @@
 ﻿
 const db = require("../models")
 const ApiError = require("../helpers/apiError")
-const { compareSync } = require("bcrypt")
 const ApiResponser = require("../helpers/apiResponser")
+const { compareSync } = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const { getPagination, getPagingData } = require("../controller/pagination/pagination")
 
 async function addUser(req, res, next) {
-    const userData = req.body
+    let {
+        first_name,
+        last_name,
+        password,
+        email,
+        user_type,
+        mobile,
+        class_id,
+        photo,
+        role_id
+    } = req.body
     try {
-        if (req.file) userData.photo = `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}`
-        const user = await db.User.create(userData)
+        if (req.file) photo = `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}`
+        if (!user_type) throw new ApiError("نوع المستخدم غير موجود")
+        const role = await db.Role.findAll({
+            limit: 1,
+            where: { alt_name: user_type }
+        });
+        if (!role[0]) throw new ApiError("صلاحية المستخدم غير موجودة ")
+        role_id = role[0].id;
+        const user = await db.User.create({
+            first_name,
+            last_name,
+            password,
+            email,
+            user_type,
+            mobile,
+            class_id,
+            role_id,
+            photo
+        })
         return new ApiResponser(res, { user })
     } catch (err) {
         next(err)
@@ -17,7 +45,9 @@ async function addUser(req, res, next) {
 }
 async function getAllusers(req, res, next) {
     try {
-        const users = await db.User.findAll(
+        const { page, pageSize } = req.query;
+        const { limit, offset } = getPagination(page, pageSize);
+        const users = await db.User.findAndCountAll(
             {
                 include: [
                     {
@@ -32,10 +62,12 @@ async function getAllusers(req, res, next) {
                 attributes: {
                     exclude: ["password"],
                 },
+                limit,
+                offset,
             },
-            { raw: true }
         );
-        return new ApiResponser(res, { users });
+
+        return new ApiResponser(res, getPagingData(users, page, limit, users));
     } catch (error) {
         next(error);
     }
@@ -47,13 +79,15 @@ async function login(req, res, next) {
     try {
         const user = await db.User.findOne({ where: { mobile: mobile } })
         if (!user) {
-            throw new ApiError(req.t("notFoundUser"), 401)
+            throw new ApiError({ 'mobile': req.t("notFoundUser") }, 401)
         } else {
+            console.log(user)
             const verfiypassword = await compareSync(password, user.password)
+            console.log(verfiypassword)
             if (!verfiypassword) {
-                throw new ApiError(req.t("wrongPassword"), 401)
+                throw new ApiError({ 'password': req.t("wrongPassword") }, 401)
             } else {
-                const token = jwt.sign({ id: user.id, role: user.role }
+                const token = jwt.sign({ id: user.id, role_id: user.role_id }
                     , process.env.SECRET_KEY,
                     {
                         expiresIn: "10d"
@@ -64,7 +98,6 @@ async function login(req, res, next) {
     } catch (err) {
         next(err)
     }
-
 }
 async function getUserById(req, res, next) {
     const userId = req.params.id

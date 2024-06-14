@@ -21,7 +21,12 @@ module.exports = (sequelize, DataTypes) => {
         as: "attachments",
         foreignKey: "lesson_id",
       });
-      Lesson.hasMany(models.Exam, {
+      // Lesson.hasMany(models.Exam, {
+      //   as: "exams",
+      //   foreignKey: "lesson_id",
+      // });
+      Lesson.belongsToMany(models.Exam, {
+        through: { model: models.ExamLesson },
         as: "exams",
         foreignKey: "lesson_id",
       });

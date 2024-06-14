@@ -12,8 +12,7 @@ const addCourseValidator = () => {
       ),
 
     body("alt_title")
-      .notEmpty()
-      .withMessage("alt_title must be not empty")
+      .optional()
       .matches(/^[\p{Script=Arabic}]+$/u)
       .withMessage("alt_title must be arabic string "),
 
@@ -24,28 +23,41 @@ const addCourseValidator = () => {
       .withMessage("description must be all string  "),
 
     body("alt_description")
-      .notEmpty()
-      .withMessage("alt_description must be not empty ")
+      .optional()
       .matches(/^[\p{Script=Arabic}]+$/u)
       .withMessage("alt_description must be all string "),
 
     body("start_date")
-      .isDate()
-      .withMessage("the end date must be data type of date"),
+      .custom(value => {
+        if (isValidDateFormat(value)) {
+          return true;
+        } else {
+          throw new Error('Invalid date format');
+        }
+      }),
+    // .isDate()
+    // .withMessage("the end date must be data type of date"),
 
     body("end_date")
+      .optional()
       .isDate()
       .withMessage("the end date must be data type of date"),
 
     body("is_free")
+      .optional()
       .isBoolean()
       .withMessage("is_free must be boolean data type "),
 
-    body("price").isInt().withMessage("price must be number"),
+    body("price")
+      .optional()
+      .isInt().withMessage("price must be number"),
 
-    body("discount").isInt().withMessage("discount must be number "),
+    body("discount")
+      .optional()
+      .isInt().withMessage("discount must be number "),
 
     body("discount_type")
+      .optional()
       .isIn(["percentage", "fixed"])
       .withMessage("discount_type must be either 'percentage' or 'fixed' "),
 
@@ -54,32 +66,26 @@ const addCourseValidator = () => {
       .withMessage(
         "status must be either 'pending' or 'active' or 'inactive' or 'rejected'"
       ),
-
-    body("teacher_id")
-      .isInt()
-      .withMessage("teacher_id must be number")
-      .custom(async (value) => {
-        const user = await db.User.findByPk(value);
-        if (!user) {
-          throw new Error("Invalid teacher_id");
-        }
-      }),
   ];
 };
-
+function isValidDateFormat(dateString) {
+  // Validate the date format using a regular expression
+  const dateFormatRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+  return dateFormatRegex.test(dateString);
+}
 const updateCourseValidator = () => {
   return [
     param('id')
-    .custom(async (value) => {
-      if (!Number.isInteger(Number(value))) {
-        throw new Error("Course id must be a number");
-      }
-      const course = await db.Course.findByPk(value);
-      if (!course) {
-        throw new Error("Course not found");
-      }
-    })
-    ,body("title")
+      .custom(async (value) => {
+        if (!Number.isInteger(Number(value))) {
+          throw new Error("Course id must be a number");
+        }
+        const course = await db.Course.findByPk(value);
+        if (!course) {
+          throw new Error("Course not found");
+        }
+      })
+    , body("title")
       .optional()
       .notEmpty()
       .withMessage("title must be not empty")
@@ -90,8 +96,6 @@ const updateCourseValidator = () => {
 
     body("alt_title")
       .optional()
-      .notEmpty()
-      .withMessage("alt_title must be not empty ")
       .matches(/^[\p{Script=Arabic}]+$/u)
       .withMessage("alt_title must be all string "),
 
@@ -104,8 +108,6 @@ const updateCourseValidator = () => {
 
     body("alt_description")
       .optional()
-      .notEmpty()
-      .withMessage("alt_description must be not empty ")
       .matches(/^[\p{Script=Arabic}]+$/u)
       .withMessage("alt_description must be all string "),
 
@@ -153,18 +155,18 @@ const updateCourseValidator = () => {
   ];
 };
 
-const deleteCousreValidator = () =>{
+const deleteCousreValidator = () => {
   return [
     param('id')
-    .custom(async (value) => {
-      if (!Number.isInteger(Number(value))) {
-        throw new Error("Course id must be a number");
-      }
-      const course = await db.Course.findByPk(value);
-      if (!course) {
-        throw new Error("Course not found");
-      }
-    })
+      .custom(async (value) => {
+        if (!Number.isInteger(Number(value))) {
+          throw new Error("Course id must be a number");
+        }
+        const course = await db.Course.findByPk(value);
+        if (!course) {
+          throw new Error("Course not found");
+        }
+      })
   ];
 }
 
@@ -173,6 +175,6 @@ const validate = (req, res, next) => {
   if (errors.isEmpty()) {
     return next();
   }
-  return res.status(422).json({success: false, errors: errors.array() });
+  return res.status(422).json({ success: false, errors: errors.array() });
 };
 module.exports = { addCourseValidator, updateCourseValidator, deleteCousreValidator, validate };

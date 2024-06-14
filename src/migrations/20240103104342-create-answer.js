@@ -2,28 +2,34 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Attachments", {
+    await queryInterface.createTable("Answers", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      file: {
+      title: {
         type: Sequelize.TEXT,
       },
-      file_type: {
-        type: Sequelize.STRING,
+      is_correct: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
-      file_size: {
+      question_id: {
         type: Sequelize.INTEGER,
-      },
-      lesson_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
-          model: "Lesson",
+          model: "Question",
           key: "id",
+          allowNull: false,
+        },
+      },
+      exam_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Exam",
+          key: "id",
+          allowNull: false,
         },
       },
       createdAt: {
@@ -39,6 +45,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Attachments");
+    await queryInterface.dropTable("Answers");
   },
 };

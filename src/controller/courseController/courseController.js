@@ -14,30 +14,52 @@ async function getAllCourses(req, res, next) {
             },
           },
           {
+            model: db.Lesson,
+            as: "lessons",
+            //   include: [
+            //     {
+            //       model: db.Attachment,
+            //       as: "attachments",
+            //     },
+            //     {
+            //       model: db.Comment,
+            //       as: "comments",
+            //       include: [
+            //         {
+            //           model: db.Comment,
+            //           as: "comment",
+            //         },
+            //       ],
+            //     },
+            //   ],
+          },
+          {
             model: db.Rate,
             as: "rates",
           },
         ],
-        // attributes: {
-        //   include: [
-        //     [
-        //       db.Sequelize.fn("SUM", db.Sequelize.col("lessons.duration")),
-        //       "duration",
-        //     ],
-        //     [
-        //       db.Sequelize.fn("SUM", db.Sequelize.col("rates.rating")),
-        //       "rating",
-        //     ],
-        //     [
-        //       db.Sequelize.fn("COUNT", db.Sequelize.col("rates.course_id")),
-        //       "rates",
-        //     ],
-        //   ],
-        //   exclude: ["lessons"],
-        // },
-      }
+        attributes: {
+          include: [
+            [
+              db.Sequelize.fn("SUM", db.Sequelize.col("lessons.duration")),
+              "duration",
+            ],
+            [
+              db.Sequelize.fn("AVG", db.Sequelize.col("rates.rating")),
+              "rating",
+            ],
+            // [
+            //   db.Sequelize.fn("COUNT", db.Sequelize.col("rates.course_id")),
+            //   "rates",
+            // ],
+          ],
+          exclude: ["lessons"],
+        },
+      },
+      { raw: true }
     );
-    return new ApiResponser(res,  courses )
+    // res.json({ courses });
+    return new ApiResponser(res, { courses })
   } catch (error) {
     next(error);
   }
@@ -45,7 +67,7 @@ async function getAllCourses(req, res, next) {
 
 async function getCourseById(req, res, next) {
   const courseId = req.params.id;
-
+  console.log(courseId)
   try {
     const course = await db.Course.findByPk(courseId, {
       include: [
@@ -55,6 +77,10 @@ async function getCourseById(req, res, next) {
           attributes: {
             exclude: ["password", "class_id"],
           },
+        },
+        {
+          model: db.Lesson,
+          as: "lessons",
         },
         {
           model: db.Rate,
@@ -82,17 +108,24 @@ async function getCourseById(req, res, next) {
     if (!course) {
       return res.status(404).json({ success: false, error: 'Course not found' });
     }
-    return new ApiResponser(res,  course )
+    return new ApiResponser(res, { course })
   } catch (error) {
     next(error);
   }
 }
 
-async function addCourse(res, res, next) {
+async function addCourse(req, res, next) {
+  const teacher_id = req.user.id
+  const user = await db.User.findByPk(teacher_id);
+  if (!user) throw new Error("Invalid teacher_id");
 
+  console.log(req.user)
+  const data = req.body
+  data.teacher_id = teacher_id
+  if (req.file) data.poster = `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}`
   try {
-    const course = await db.Course.create(req.body);
-    return new ApiResponser(res,  course )
+    const course = await db.Course.create(data);
+    return new ApiResponser(res, course)
   } catch (error) {
     next(error);
   }
@@ -103,7 +136,7 @@ async function updateCourseById(req, res, next) {
   try {
     const course = await db.Course.findByPk(courseId);
     await course.update(req.body);
-    return new ApiResponser(res,  course )
+    return new ApiResponser(res, course)
   } catch (error) {
     next(error);
   }
@@ -114,7 +147,7 @@ async function deleteCousreById(req, res, next) {
   try {
     const course = await db.Course.findByPk(courseId);
     await course.destroy();
-    return new ApiResponser(res,  course )
+    return new ApiResponser(res, course)
   } catch (error) {
     next(error);
   }

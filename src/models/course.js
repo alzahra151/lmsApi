@@ -34,6 +34,8 @@ module.exports = (sequelize, DataTypes) => {
       discount_type: DataTypes.ENUM("percentage", "fixed"),
       status: DataTypes.ENUM("pending", "active", "inactive", "rejected"),
       teacher_id: DataTypes.INTEGER,
+      poster: DataTypes.STRING,
+      total: DataTypes.INTEGER,
     },
     {
       sequelize,

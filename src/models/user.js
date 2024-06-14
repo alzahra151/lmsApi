@@ -1,6 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -10,10 +10,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.belongsTo(models.Role, { as: "role", foreignKey: "role_id" });
+      User.belongsTo(models.Role, {
+        as: "role", foreignKey: "role_id", targetKey: 'id',
+        constraints: true,
+        scope: {
+          name: sequelize.col('user_type')
+        }
+      });
       User.belongsTo(models.Class, { as: "class", foreignKey: "class_id" });
       User.hasMany(models.Comment, { foreignKey: "user_id" });
-      User.hasMany(models.Rate, { foreignKey: "user_id" }, { onDelete: 'CASCADE' });
+      User.hasMany(
+        models.Rate,
+        { foreignKey: "user_id" },
+        { onDelete: "CASCADE" }
+      );
       User.hasMany(models.Rate, { foreignKey: "teacher_id" });
       User.hasMany(models.Course, { foreignKey: "teacher_id" });
       User.hasMany(models.OTP, { foreignKey: "user_id" });
@@ -32,9 +42,13 @@ module.exports = (sequelize, DataTypes) => {
       last_name: DataTypes.STRING,
       password: DataTypes.STRING,
       email: DataTypes.STRING,
-      user_type: DataTypes.ENUM("admin", "student", "teacher", "admin_user"),
+      user_type: DataTypes.ENUM("admin", "student", "teacher", "super_admin"),
       photo: DataTypes.TEXT,
-      mobile: DataTypes.INTEGER,
+      mobile: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        // unique: true,
+      },
       role_id: DataTypes.INTEGER,
       class_id: DataTypes.INTEGER,
     },
@@ -42,11 +56,11 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "User",
     }
-
   );
   User.beforeCreate(async (user) => {
-    const salt = await bcrypt.genSaltSync(10, 'a');
+    const salt = await bcrypt.genSaltSync(10, "a");
     user.password = bcrypt.hashSync(user.password, salt);
-  })
+  });
+
   return User;
 };

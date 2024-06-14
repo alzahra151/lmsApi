@@ -16,12 +16,21 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       alt_name: DataTypes.STRING,
-      // permissions: DataTypes.ARRAY(DataTypes.TEXT),
+      permissions: {
+        type: DataTypes.JSON,
+        defaultValue: [],
+      }
     },
     {
       sequelize,
       modelName: "Role",
     }
   );
+  // Role.create({ name: "مدرس", alt_name: "teacher", permissions: ['add_user', 'add_course'] })
+  // ["add_user", "delete_user", "update_user", "get_users", "get_all_cources", "delete_course"]
+  // ["get_all_cources", "get_course", "get_exam", "start_exam", "correct_exam"]
+  // ["add_course", "get_all_cources", "get_course", "get_teacher_cources", "get_course_exams"]
+  // ["add_student", "delete_student", "update_student", "get_all_students", "get_all_cources", "get_course", "get_course_exams"]
+
   return Role;
 };

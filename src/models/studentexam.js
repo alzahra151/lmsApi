@@ -18,14 +18,32 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "teacher_id",
         as: "teacher",
       });
+      StudentExam.hasMany(models.StudentExamQuestions, {
+        foreignKey: "exam_id",
+        as: "questions",
+      });
     }
   }
   StudentExam.init(
     {
       exam_id: DataTypes.INTEGER,
-      degree: DataTypes.INTEGER,
+      degree: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
       student_id: DataTypes.INTEGER,
       teacher_id: DataTypes.INTEGER,
+      status: {
+        type: DataTypes.ENUM("completed", "paused", "started"),
+        defaultValue: "started",
+      },
+      started_at: {
+        type: DataTypes.DATE,
+        defaultValue: new Date(),
+      },
+      ended_at: {
+        type: DataTypes.DATE,
+      },
     },
     {
       sequelize,

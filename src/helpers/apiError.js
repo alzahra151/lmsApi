@@ -1,7 +1,6 @@
 class ApiError extends Error {
   constructor(message, httpStatus) {
     super(message, httpStatus);
-    console.log(httpStatus);
     this.message = message;
     this.name = this.name;
     this.message = message;
