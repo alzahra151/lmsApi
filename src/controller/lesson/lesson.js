@@ -184,6 +184,8 @@ async function addLessonDirect(fileBuffer, fileSize) {
     try {
         console.log(fileBuffer)
         console.log(fileSize)
+        const token = `${process.env.VIMEO_TOKEN}`
+        console.log(token)
         // const fileSize = await getStreamSize(fileStream)
         const initializeResponse = await axios.post(
             'https://api.vimeo.com/me/videos',
@@ -195,7 +197,7 @@ async function addLessonDirect(fileBuffer, fileSize) {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.VIMEO_TOKEN} `,
+                    'Authorization': `Bearer ${token} `,
                     'Content-Type': 'application/json'
                 }
             }
