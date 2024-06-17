@@ -197,7 +197,7 @@ async function addLessonDirect(fileBuffer, fileSize) {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${token} `,
+                    'Authorization': `Bearer 9db074d2025c7c8b89da3094894c8309 `,
                     'Content-Type': 'application/json'
                 }
             }
