@@ -14,7 +14,14 @@ const { addLesson, sseConfig } = require("../../controller/lesson/lesson")
 const { addLessonValidator } = require("../../middleware's/validation/lessonValidation")
 const multer = require('multer');
 const uploadVideo = multer({
-    storage: multer.diskStorage({}),
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, '/uploads/videos'); // Adjust path as per your server setup
+        },
+        filename: function (req, file, cb) {
+            cb(null, Date.now() + '-' + file.originalname);
+        }
+    }),
 });
 
 adminRoutes.route("/courses").get(adminController.getAllcourses);
