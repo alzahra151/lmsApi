@@ -16,7 +16,7 @@ const multer = require('multer');
 const uploadVideo = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, '/uploads/videos'); // Adjust path as per your server setup
+            cb(null, 'src/uploads/videos'); // Adjust path as per your server setup
         },
         filename: function (req, file, cb) {
             cb(null, Date.now() + '-' + file.originalname);
