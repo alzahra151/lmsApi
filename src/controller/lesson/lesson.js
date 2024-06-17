@@ -3,7 +3,7 @@ const fs = require('fs');
 const axios = require('axios');
 const Bull = require('bull');
 const ApiError = require("../../helpers/apiError");
-
+const path = require('path');
 // let client = new Vimeo(
 //     "c38c40edbd93c2eafa4df06a87a9803020f05b93",
 //     "ND7S6lGMtBaafxXF0cy7JPTe2S05kBuuauiJwejE7gxX051FuA/07oY971mkj4rtj2nGAKQ+VF4uAmVxefNHKUw9hN8JJy4gOBCPbE53yvs8snxsryfOA0VpbLVrqqLg",
@@ -30,7 +30,9 @@ const uploadQueue = new Bull('uploadQueue', {
         maxRetriesPerRequest: null
     }
 });
-
+const normalizePath = (filePath) => {
+    return path.normalize(filePath);
+}
 async function addLesson(req, res, next) {
     // console.log(req.file)
     try {
@@ -47,7 +49,8 @@ async function addLesson(req, res, next) {
         // console.log(lessonData)
         console.log(req.headers)
         // if (!req.file) throw new ApiError('  الملف لا يجب ان يكون فارغ')
-        const filePath = req.file.path
+        // const filePath = req.file.path
+        const filePath = normalizePath(req.file.path);
         console.log(req.file)
         console.log("file path ", filePath)
         const job = await uploadQueue.add({ lessonData, filePath });
