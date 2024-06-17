@@ -32,6 +32,7 @@ const uploadQueue = new Bull('uploadQueue', {
 });
 
 async function addLesson(req, res, next) {
+    console.log(req.file)
     try {
         const lessonData = {
             title: req.body.title,
@@ -43,10 +44,12 @@ async function addLesson(req, res, next) {
             duration: req.body.duration,
             is_free: req.body.is_free,
         };
-        console.log(lessonData)
+        // console.log(lessonData)
         console.log(req.headers)
         if (!req.file) throw new ApiError('  الملف لا يجب ان يكون فارغ')
         const filePath = req.file.path
+        console.log(req.file)
+        console.log(filePath)
         const job = await uploadQueue.add({ lessonData, filePath });
         console.log(job.data)
         res.status(200).json({ message: 'Upload initiated', job: job.id });
