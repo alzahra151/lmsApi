@@ -4,6 +4,7 @@ const axios = require('axios');
 const Bull = require('bull');
 const ApiError = require("../../helpers/apiError");
 const path = require('path');
+const ApiResponser = require("../../helpers/apiResponser");
 // let client = new Vimeo(
 //     "c38c40edbd93c2eafa4df06a87a9803020f05b93",
 //     "ND7S6lGMtBaafxXF0cy7JPTe2S05kBuuauiJwejE7gxX051FuA/07oY971mkj4rtj2nGAKQ+VF4uAmVxefNHKUw9hN8JJy4gOBCPbE53yvs8snxsryfOA0VpbLVrqqLg",
@@ -50,12 +51,17 @@ async function addLesson(req, res, next) {
         console.log(req.headers)
         // if (!req.file) throw new ApiError('  الملف لا يجب ان يكون فارغ')
         // const filePath = req.file.path
-        const filePath = normalizePath(req.file.path);
+        // const filePath = normalizePath(req.file.path);
         console.log(req.file)
-        console.log("file path ", filePath)
-        const job = await uploadQueue.add({ lessonData, filePath });
-        console.log(job.data)
-        res.status(200).json({ message: 'Upload initiated', job: job.id });
+        // console.log("file path ", filePath)
+        const url = await addLessonDirect(req.file.buffer, req.file.size)
+        lessonData.video_url = url
+        console.log(lessonData)
+        const lesson = await saveLesson(lessonData)
+        // const job = await uploadQueue.add({ lessonData });
+        // console.log(job.data)
+        // res.status(200).json({ message: 'success' });
+        return new ApiResponser(res, { lesson })
     } catch (error) {
         next(error)
     }
@@ -169,6 +175,76 @@ async function saveLesson(lessonData) {
         return lesson;
     } catch (error) {
         throw new Error("لم يتم حفظ الدرس ")
+    }
+}
+
+
+async function addLessonDirect(fileBuffer, fileSize) {
+    // const fileSize = fileBuffer.length;
+    try {
+        console.log(fileBuffer)
+        console.log(fileSize)
+        // const fileSize = await getStreamSize(fileStream)
+        const initializeResponse = await axios.post(
+            'https://api.vimeo.com/me/videos',
+            {
+                upload: {
+                    approach: 'tus',
+                    size: fileSize
+                }
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${process.env.VIMEO_TOKEN} `,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        const uploadLink = initializeResponse.data.upload.upload_link;
+        const videoUri = initializeResponse.data.link;
+        console.log(videoUri)
+        // console.log(fileStream)
+        const chunkSize = 10 * 1024 * 1024; // 10MB chunk size
+        let start = 0;
+        let chunkNumber = 0;
+
+        while (start < fileSize) {
+            const chunk = fileBuffer.slice(start, start + chunkSize);
+            const retries = 3
+            for (let attempt = 1; attempt <= retries; attempt++) {
+                try {
+                    console.log(`Uploading chunk ${++chunkNumber} starting at ${start}`);
+                    await axios.patch(uploadLink, chunk, {
+                        headers: {
+                            'Tus-Resumable': '1.0.0',
+                            'Upload-Offset': start.toString(),
+                            'Content-Type': 'application/offset+octet-stream',
+                            Accept: 'application/vnd.vimeo.*+json;version=3.4',
+                        },
+                    });
+                    start += chunk.length;
+                    const progress = Math.round((start / fileSize) * 100);
+                    clients.forEach(client => {
+                        client.write(`data: ${progress}\n\n`);
+                    });
+                    console.log(`Progress: ${progress}%`);
+                    break;
+                } catch (error) {
+                    if (attempt === retries) {
+                        console.error(`Failed to upload chunk after ${retries} attempts:`, error);
+                        throw new Error('فشل التحميل الرجاء اعادة المحاولة ');
+                    }
+                    console.error(`Error uploading chunk ${chunkNumber}:`, error);
+                    await delay((2 ** attempt) * 100); // delay before retrying
+                }
+            }
+        }
+        console.log('Upload completed successfully!');
+        return videoUri
+    } catch (error) {
+        console.error('Failed to upload to Vimeo:', error);
+        throw new Error('فشل تحميل الفيديو ');
     }
 }
 module.exports = {
