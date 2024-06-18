@@ -14,8 +14,7 @@ const { addLesson, sseConfig } = require("../../controller/lesson/lesson")
 const { addLessonValidator } = require("../../middleware's/validation/lessonValidation")
 const multer = require('multer');
 const uploadVideo = multer({
-    storage: multer.diskStorage({
-
+    storage: multer.memoryStorage({
     }),
 });
 
