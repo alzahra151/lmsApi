@@ -86,7 +86,7 @@ async function uploadToVimeoChunks(fileStream) {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.VIMEO_TOKEN} `,
+                    'Authorization': `Bearer 9db074d2025c7c8b89da3094894c8309`,
                     'Content-Type': 'application/json'
                 }
             }
