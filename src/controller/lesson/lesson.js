@@ -30,7 +30,7 @@ const uploadQueue = new Bull('uploadQueue', {
 });
 
 async function addLesson(req, res, next) {
-    // console.log(req.file)
+    console.log(req.file)
     try {
         const lessonData = {
             title: req.body.title,
