@@ -14,8 +14,8 @@ const { addLesson, sseConfig } = require("../../controller/lesson/lesson")
 const { addLessonValidator } = require("../../middleware's/validation/lessonValidation")
 const multer = require('multer');
 const uploadVideo = multer({
-    storage: multer.memoryStorage({
-    }),
+    storage: multer.memoryStorage({}),
+    limits: { fileSize: 3 * 1024 * 1024 * 1024 },
 });
 
 adminRoutes.route("/courses").get(adminController.getAllcourses);
