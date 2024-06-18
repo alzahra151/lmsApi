@@ -131,7 +131,76 @@ async function deleteLessonById(req, res, next) {
     next(error);
   }
 }
+async function addLessonDirect(fileBuffer, fileSize) {
+  // const fileSize = fileBuffer.length;
+  try {
+    console.log(fileBuffer)
+    console.log(fileSize)
+    const token = `${process.env.VIMEO_TOKEN}`
+    console.log(token)
+    // const fileSize = await getStreamSize(fileStream)
+    const initializeResponse = await axios.post(
+      'https://api.vimeo.com/me/videos',
+      {
+        upload: {
+          approach: 'tus',
+          size: fileSize
+        }
+      },
+      {
+        headers: {
+          'Authorization': `Bearer 9db074d2025c7c8b89da3094894c8309 `,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
+    const uploadLink = initializeResponse.data.upload.upload_link;
+    const videoUri = initializeResponse.data.link;
+    console.log(videoUri)
+    // console.log(fileStream)
+    const chunkSize = 10 * 1024 * 1024; // 10MB chunk size
+    let start = 0;
+    let chunkNumber = 0;
+
+    while (start < fileSize) {
+      const chunk = fileBuffer.slice(start, start + chunkSize);
+      const retries = 3
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          console.log(`Uploading chunk ${++chunkNumber} starting at ${start}`);
+          await axios.patch(uploadLink, chunk, {
+            headers: {
+              'Tus-Resumable': '1.0.0',
+              'Upload-Offset': start.toString(),
+              'Content-Type': 'application/offset+octet-stream',
+              Accept: 'application/vnd.vimeo.*+json;version=3.4',
+            },
+          });
+          start += chunk.length;
+          const progress = Math.round((start / fileSize) * 100);
+          clients.forEach(client => {
+            client.write(`data: ${progress}\n\n`);
+          });
+          console.log(`Progress: ${progress}%`);
+          break;
+        } catch (error) {
+          if (attempt === retries) {
+            console.error(`Failed to upload chunk after ${retries} attempts:`, error);
+            throw new Error('فشل التحميل الرجاء اعادة المحاولة ');
+          }
+          console.error(`Error uploading chunk ${chunkNumber}:`, error);
+          await delay((2 ** attempt) * 100); // delay before retrying
+        }
+      }
+    }
+    console.log('Upload completed successfully!');
+    return videoUri
+  } catch (error) {
+    console.error('Failed to upload to Vimeo:', error);
+    throw new Error('فشل تحميل الفيديو ');
+  }
+}
 
 
 module.exports = {
