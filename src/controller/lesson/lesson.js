@@ -48,9 +48,10 @@ async function addLesson(req, res, next) {
         const filePath = req.file.path
         console.log("file path ", filePath)
         // const job2 = await uploadQueue.add({ lessonData });
-        const job = await uploadQueue.add({ lessonData, filePath });
-        console.log(job.data)
-        return new ApiResponser(res, { "job_id": job.id })
+        // const job = await uploadQueue.add({ lessonData, filePath });
+        // console.log(job.data)
+        // return new ApiResponser(res, { "job_id": job.id })
+        return new ApiResponser(res, "sucess")
     } catch (error) {
         next(error)
     }
