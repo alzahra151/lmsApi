@@ -42,16 +42,15 @@ async function addLesson(req, res, next) {
             is_free: req.body.is_free,
         };
         // console.log(lessonData)
-        console.log(req.headers)
+
         if (!req.file) throw new ApiError('  الملف لا يجب ان يكون فارغ')
         console.log(req.file)
         const filePath = req.file.path
         console.log("file path ", filePath)
-        // const job2 = await uploadQueue.add({ lessonData });
-        // const job = await uploadQueue.add({ lessonData, filePath });
-        // console.log(job.data)
-        // return new ApiResponser(res, { "job_id": job.id })
-        return new ApiResponser(res, "sucess")
+        const job = await uploadQueue.add({ lessonData, filePath });
+        console.log(job.data)
+        return new ApiResponser(res, { "job_id": job.id })
+
     } catch (error) {
         next(error)
     }
