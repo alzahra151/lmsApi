@@ -44,7 +44,7 @@ async function addLesson(req, res, next) {
         // console.log(lessonData)
 
         if (!req.file) throw new ApiError('  الملف لا يجب ان يكون فارغ')
-        console.log(req.file)
+
         const filePath = req.file.path
         console.log("file path ", filePath)
         const job = await uploadQueue.add({ lessonData, filePath });

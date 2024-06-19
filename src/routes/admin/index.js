@@ -13,10 +13,13 @@ const { addRole, getRole } = require('../../controller/roleController/role')
 const { addLesson, sseConfig } = require("../../controller/lesson/lesson")
 const { addLessonValidator } = require("../../middleware's/validation/lessonValidation")
 const multer = require('multer');
+
 const uploadVideo = multer({
-    storage: multer.memoryStorage({}),
-    limits: { fileSize: 3 * 1024 * 1024 * 1024 },
+    storage: multer.diskStorage({}),
 });
+
+adminRoutes.post("/lessons/add", uploadVideo.single("video_url"), addLesson);
+
 
 adminRoutes.route("/courses").get(adminController.getAllcourses);
 adminRoutes.route("/course/:id").get(adminController.getCourseById);
@@ -43,7 +46,7 @@ adminRoutes.post("/exams/add", checkCreateExamScheme, validate, createNewExam);
 adminRoutes.get('/course/:id/exam', getCourserExams)
 adminRoutes.get('/exam/:id/students', getExamStudents)
 
-adminRoutes.post("/lessons/add", uploadVideo.single("video_url"), addLesson);
+
 adminRoutes.get("/lessons/events", sseConfig);
 adminRoutes.post("/role/add", addRole)
 adminRoutes.get("/role/:id", getRole)
