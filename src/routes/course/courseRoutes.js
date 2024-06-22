@@ -11,7 +11,7 @@ const { validate } = require("../../middleware's/validation");
 const upload = require("../../controller/multer");
 // courseRoutes.get("/courses", courseController.);
 courseRoutes.route("/courses").get(courseController.getAllCourses)
-courseRoutes.post("/", upload.single("poster"), courseController.addCourse);
+courseRoutes.post("/", upload.single("poster"),authorization, courseController.addCourse);
 courseRoutes.get("/:id", courseController.getCourseById);
 courseRoutes.put(
   "/:id",

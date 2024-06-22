@@ -12,7 +12,7 @@ async function authorization(req, res, next) {
     // complete process
     const tokenValue = token.split(' ')[1];
     if (!tokenValue) throw new ApiError("Token is required", 401);
-    jwt.verify(tokenValue, process.env.SECRET_KEY, (error, user) => {
+    jwt.verify(tokenValue, `${process.env.SECRET_KEY}`, (error, user) => {
       if (error) throw new ApiError("Invalid or expired token", 401);
       req.user = user
     })
