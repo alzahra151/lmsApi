@@ -52,16 +52,24 @@
     "classes": [
         {
             "name": "الصف الاول الثانوي",
-            "alt_name": "First grade secondary"
+            "alt_name": "First grade secondary",
+             "createdAt":"2024-4-13",
+              "updatedAt":"2024-4-13"
         },
         {
             "name": "الصف الثاني الثانوي",
-            "alt_name": "Second year of secondary school"
+            "alt_name": "Second year of secondary school",
+             "createdAt":"2024-4-13",
+        
+               "updatedAt":"2024-4-13"
         },
         {
             "name": "الصف الثالث الثانوي",
-            "alt_name": "Third year of secondary school"
+            "alt_name": "Third year of secondary school",
+            "createdAt":"2024-4-13",
+             "updatedAt":"2024-4-13"
         }
+        
     ],
     "roles": [
         {

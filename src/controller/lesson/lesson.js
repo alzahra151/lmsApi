@@ -30,7 +30,7 @@ const uploadQueue = new Bull('uploadQueue', {
 });
 
 async function addLesson(req, res, next) {
-    console.log(req.file)
+    // console.log(req.file)
     try {
         const lessonData = {
             title: req.body.title,
@@ -38,20 +38,14 @@ async function addLesson(req, res, next) {
             description: req.body.description,
             alt_description: req.body.alt_description,
             course_id: req.body.course_id,
+            video_url: req.body.video_url,
             duration: req.body.duration,
             is_free: req.body.is_free,
         };
         // console.log(lessonData)
-        console.log(req.headers)
-        if (!req.file) throw new ApiError('  الملف لا يجب ان يكون فارغ')
-        console.log(req.file)
-        const filePath = req.file.path
-        console.log("file path ", filePath)
-        // const job2 = await uploadQueue.add({ lessonData });
-        // const job = await uploadQueue.add({ lessonData, filePath });
-        // console.log(job.data)
-        // return new ApiResponser(res, { "job_id": job.id })
-        return new ApiResponser(res, "sucess")
+        const lesson = await db.Lesson.create(lessonData)
+        return new ApiResponser(res, { lesson })
+
     } catch (error) {
         next(error)
     }

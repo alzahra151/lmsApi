@@ -15,16 +15,16 @@ module.exports = {
       alt_name: {
         type: Sequelize.STRING,
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: new Date(),
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: new Date(),
-      },
+      // createdAt: {
+      //   allowNull: true,
+      //   type: Sequelize.DATE,
+      //   defaultValue: new Date(),
+      // },
+      // updatedAt: {
+      //   allowNull: true,
+      //   type: Sequelize.DATE,
+      //   defaultValue: new Date(),
+      // },
     });
   },
   async down(queryInterface, Sequelize) {
