@@ -122,8 +122,11 @@ async function addCourse(req, res, next) {
   console.log(req.user)
   const data = req.body
   data.teacher_id = teacher_id
+  console.log(data.teacher_id)
+  console.log(data)
   if (req.file) data.poster = `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}`
   try {
+    console.log(data)
     const course = await db.Course.create(data);
     return new ApiResponser(res, course)
   } catch (error) {
