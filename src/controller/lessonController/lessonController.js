@@ -51,53 +51,23 @@ async function sseConfig(req, res, next) {
   });
 }
 async function addLesson(req, res, next) {
-  const data = req.body
-  console.log(req.file)
-  let file_name = req.file.path
-
-  let uploadPercentage = 0;
-  console.log(req.file)
   try {
+    const lessonData = {
+      title: req.body.title,
+      alt_title: req.body.alt_title,
+      description: req.body.description,
+      alt_description: req.body.alt_description,
+      course_id: req.body.course_id,
+      video_url: req.body.video_url,
+      duration: req.body.duration,
+      is_free: req.body.is_free,
+    };
+    // console.log(lessonData)
+    const lesson = await db.Lesson.create(lessonData)
+    return new ApiResponser(res, { lesson })
 
-    client.upload(
-      file_name,
-      {
-        'name': 'Untitled',
-        'description': 'The description goes here.'
-      },
-      async function (uri) {
-        console.log('Your video URI is: ' + uri);
-
-        client.request(uri + '?fields=link', async function (error, body, statusCode, headers) {
-          if (error) {
-            console.log('There was an error making the request.')
-            console.log('Server reported: ' + error)
-            return ``
-          }
-          console.log('Your video link is: ' + body.link)
-          data.video_url = body.link
-          const lesson = await db.Lesson.create(data);
-          // res.status(200).json(lesson);
-        })
-      },
-      function (bytes_uploaded, bytes_total) {
-        uploadPercentage = (bytes_uploaded / bytes_total * 100).toFixed(2)
-        console.log(bytes_uploaded, bytes_total, uploadPercentage + '%')
-
-        // Send progress update using SSE
-        clients.forEach(client => {
-          client.write(`data: ${uploadPercentage}\n\n`);
-          console.log(uploadPercentage)
-        });
-      },
-      function (error) {
-
-        console.log('Failed because: ' + error)
-      },
-    )
-    res.status(200).json('upload started');
   } catch (error) {
-    next(error);
+    next(error)
   }
 }
 
