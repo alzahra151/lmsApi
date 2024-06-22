@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       price: {
         type: DataTypes.INTEGER,
         allowNull: true,    // Allow NULL
-        defaultValue: 0,    // Default to 0
+//        defaultValue: 0,    // Default to 0
       },
       discount: DataTypes.INTEGER,
       discount_type: DataTypes.ENUM("percentage", "fixed"),
