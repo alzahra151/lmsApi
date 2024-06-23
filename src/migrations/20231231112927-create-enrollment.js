@@ -40,6 +40,7 @@ module.exports = {
       },
       is_free: {
         type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       discount: {
         type: Sequelize.INTEGER,
@@ -56,10 +57,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
     });
   },

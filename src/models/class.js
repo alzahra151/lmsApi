@@ -9,8 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Class.hasMany(models.User, { foreignKey: "class_id" });
-      Class.hasMany(models.Exam, { foreignKey: "class_id" });
+
+      Class.hasMany(models.User, { foreignKey: "class_id", as: "users" });
+      Class.hasMany(models.Exam, { foreignKey: "class_id", as: "exams" });
     }
   }
   Class.init(
@@ -21,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Class",
+      timestamps: true,
     }
   );
   return Class;

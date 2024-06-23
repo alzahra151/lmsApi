@@ -21,11 +21,13 @@ i18next
       fallbackLng: "ar",
       lng: "ar",
       preload: ["en", "ar"],
+
     },
     (err, t) => {
       if (err) return console.error(err);
       console.log("i18next is ready...");
     }
   );
+
 
 module.exports = i18nextMiddleware.handle(i18next);

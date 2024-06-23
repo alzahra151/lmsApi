@@ -35,6 +35,7 @@ module.exports = {
       },
       rating: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       notes: {
         type: Sequelize.TEXT,
@@ -42,10 +43,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
     });
   },

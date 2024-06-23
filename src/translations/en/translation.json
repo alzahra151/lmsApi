@@ -1,3 +1,13 @@
 {
-    "success": "Data sent successfully"
+    "success": "Data sent successfully",
+    "mobileValidationMsg":"Mobile number is not valid",
+    "mobileRequiredMsg":"Mobile is required",
+    "passwordValidationMsg":"Password must be at least 6 characters long",
+    "nameValidationMsg":"Name must be between 3 and 15 characters",
+    "emailValidMsg":"Email is not valid",
+     "invalidType":"Invalid image type",
+     "notFoundUser":"User not found",
+     "wrongPassword":"Password not match",
+     "sucessDelete":"Data deletd successfully"
+
 }

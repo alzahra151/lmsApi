@@ -33,11 +33,13 @@ module.exports = {
       },
       price: {
         type: Sequelize.INTEGER,
+        allowNull: true,
         defaultValue: 0,
       },
       discount: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
+        allowNull: true,
+        // defaultValue: 0,
       },
       teacher_id: {
         type: Sequelize.INTEGER,
@@ -49,7 +51,8 @@ module.exports = {
       },
       discount_type: {
         type: Sequelize.ENUM("percentage", "fixed"),
-        defaultValue: "fixed",
+        allowNull: true,
+        // defaultValue: "fixed",
       },
       status: {
         type: Sequelize.ENUM("pending", "active", "inactive", "rejected"),
@@ -58,10 +61,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
     });
   },

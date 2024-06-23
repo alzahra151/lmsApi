@@ -23,6 +23,7 @@ module.exports = {
       },
       user_type: {
         type: Sequelize.ENUM("admin", "student", "teacher", "admin_user"),
+        defaultValue: "admin",
       },
       photo: {
         type: Sequelize.TEXT,
@@ -49,10 +50,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
     });
   },

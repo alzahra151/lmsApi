@@ -38,16 +38,28 @@ module.exports = {
           key: "id",
         },
       },
+
+      answer_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Answer",
+          key: "id",
+        },
+      },
       is_correct: {
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
     });
   },

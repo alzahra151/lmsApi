@@ -29,11 +29,17 @@ module.exports = (sequelize, DataTypes) => {
       start_date: DataTypes.DATE,
       end_date: DataTypes.DATE,
       is_free: DataTypes.BOOLEAN,
-      price: DataTypes.INTEGER,
+      price: {
+        type: DataTypes.INTEGER,
+        allowNull: true,    // Allow NULL
+//        defaultValue: 0,    // Default to 0
+      },
       discount: DataTypes.INTEGER,
       discount_type: DataTypes.ENUM("percentage", "fixed"),
       status: DataTypes.ENUM("pending", "active", "inactive", "rejected"),
       teacher_id: DataTypes.INTEGER,
+      poster: DataTypes.STRING,
+      total: DataTypes.INTEGER,
     },
     {
       sequelize,

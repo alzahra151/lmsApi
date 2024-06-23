@@ -5,7 +5,6 @@ const http = require("http");
 const cors = require("cors");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
-
 const path = require("path");
 const db = require("./models");
 const routes = require("./routes");
@@ -19,8 +18,11 @@ app.use(helmet());
 app.use(cookieParser());
 
 app.set(express.static(path.join(__dirname, "public")));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
 app.use(translationMiddleware);
 
 app.use(routes);
@@ -32,7 +34,7 @@ app.use("*", (req, res, next) => {
 });
 
 app.use(ErrorHandler);
-// create server
+// create server***
 const server = http.createServer(app);
 
 async function connectToDatabase() {
