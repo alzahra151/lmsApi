@@ -91,10 +91,11 @@
             "end_date":"2024-12-31",
             "is_free": false,
             "price": "150",
-"updatedAt":"2024-12-31",
+
             "discount": "25",
             "discount_type": "fixed",
-   "createdAt":"2024-12-31",
+            "createdAt": "2024-06-24T12:00:00.000Z",
+            "updatedAt": "2024-06-24T12:00:00.000Z",
             "teacher_id": 9,
             "poster":"https://res.cloudinary.com/dwls7omjo/image/upload/v1718215222/2024-06-12_br0jxu.png"
         }

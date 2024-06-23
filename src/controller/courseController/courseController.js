@@ -21,6 +21,16 @@ async function getAllCourses(req, res, next) {
                 model: db.Attachment,
                 as: "attachments",
               },
+              // {
+              //   model: db.Comment,
+              //   as: "comments",
+              //   include: [
+              //     {
+              //       model: db.Comment,
+              //       as: "comment",
+              //     },
+              //   ],
+              // },
             ],
           },
           {
@@ -29,12 +39,12 @@ async function getAllCourses(req, res, next) {
           },
         ],
         attributes: [
-          'id', // include id in SELECT list
-          'title', // include title in SELECT list
-          [db.Sequelize.fn("SUM", db.Sequelize.col("lessons.duration")), "duration"],
-          [db.Sequelize.fn("AVG", db.Sequelize.col("rates.rating")), "rating"],
+          'id',
+          'title',
+          [db.Sequelize.fn('SUM', db.Sequelize.col('lessons.duration')), 'totalDuration'],
+          [db.Sequelize.fn('AVG', db.Sequelize.col('rates.rating')), 'averageRating'],
         ],
-        group: ['Course.id', 'Course.title'], // group by id and title
+        group: ['Course.id', 'Course.title'], // Group by id and title
       },
       { raw: true }
     );

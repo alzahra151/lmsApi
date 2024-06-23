@@ -55,6 +55,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "User",
+      // timestamps: true, // This adds createdAt and updatedAt timestamps
+      // // underscored: true,
     }
   );
   User.beforeCreate(async (user) => {
