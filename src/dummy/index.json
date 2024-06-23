@@ -6,47 +6,29 @@
             "mobile": "+201112345671",
             "role_id": 1,
             "class_id": null,
-            "user_type": "admin"
+            "user_type": "admin",
+            "createdAt":"2024-06-24",
+            "updatedAt":"2024-06-24"
         },
         {
-            "first_name": "ايمان",
-            "last_name": "توفيق",
-            "mobile": "+201112345672",
+            "first_name": "إبراهيم",
+            "last_name": "الدسوقي",
+            "mobile": "01115302646",
             "role_id": 2,
             "class_id": null,
-            "user_type": "admin_user"
+            "user_type": "teacher",
+             "createdAt":"2024-06-24",
+            "updatedAt":"2024-06-24"
         },
         {
-            "first_name": "استاذ محمد",
+            "first_name": "مينا مخلص",
             "last_name": "ايمن",
-            "mobile": "+201112345673",
+            "mobile": "01001037966 ",
             "user_type": "teacher",
             "class_id": null,
-            "role_id": null
-        },
-        {
-            "first_name": "ابراهيم",
-            "last_name": "فؤاد",
-            "mobile": "+201112345674",
-            "user_type": "student",
-            "class_id": 1,
-            "role_id": null
-        },
-        {
-            "first_name": "السيد",
-            "last_name": "صالح",
-            "mobile": "+201112345675",
-            "user_type": "student",
-            "class_id": 1,
-            "role_id": null
-        },
-        {
-            "first_name": "مريم",
-            "last_name": "اسلام",
-            "mobile": "+201112345676",
-            "user_type": "student",
-            "class_id": 2,
-            "role_id": null
+            "role_id": 2,
+             "createdAt":"2024-06-24",
+            "updatedAt":"2024-06-24"
         }
     ],
     "classes": [
@@ -74,11 +56,15 @@
     "roles": [
         {
             "name": "الادارة",
-            "alt_name": "Management"
+            "alt_name": "Management",
+             "createdAt":"2024-06-24",
+            "updatedAt":"2024-06-24"
         },
         {
             "name": "مساعدة",
-            "alt_name": "Assistant"
+            "alt_name": "Assistant",
+             "createdAt":"2024-06-24",
+            "updatedAt":"2024-06-24"
         }
     ],
     "courses": [
@@ -93,9 +79,8 @@
             "discount": "25",
             "discount_type": "fixed",
             "teacher_id": 16,
-"updatedAt":"2024-12-31",
-
-             "createdAt":"2024-12-31",
+            "createdAt":"2024-06-24",
+            "updatedAt":"2024-06-24",
             "poster":"https://res.cloudinary.com/dwls7omjo/image/upload/v1718448876/artworks-zSIq2XIBbynWzKGc-WeiAng-t500x500_gakqdf.jpg"
         },
     {

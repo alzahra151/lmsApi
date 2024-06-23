@@ -16,49 +16,30 @@ async function getAllCourses(req, res, next) {
           {
             model: db.Lesson,
             as: "lessons",
-            //   include: [
-            //     {
-            //       model: db.Attachment,
-            //       as: "attachments",
-            //     },
-            //     {
-            //       model: db.Comment,
-            //       as: "comments",
-            //       include: [
-            //         {
-            //           model: db.Comment,
-            //           as: "comment",
-            //         },
-            //       ],
-            //     },
-            //   ],
+            include: [
+              {
+                model: db.Attachment,
+                as: "attachments",
+              },
+            ],
           },
           {
             model: db.Rate,
             as: "rates",
           },
         ],
-        attributes: {
-          include: [
-            [
-              db.Sequelize.fn("SUM", db.Sequelize.col("lessons.duration")),
-              "duration",
-            ],
-            [
-              db.Sequelize.fn("AVG", db.Sequelize.col("rates.rating")),
-              "rating",
-            ],
-            // [
-            //   db.Sequelize.fn("COUNT", db.Sequelize.col("rates.course_id")),
-            //   "rates",
-            // ],
-          ],
-          exclude: ["lessons"],
-        },
+        attributes: [
+          'id', // include id in SELECT list
+          'title', // include title in SELECT list
+          [db.Sequelize.fn("SUM", db.Sequelize.col("lessons.duration")), "duration"],
+          [db.Sequelize.fn("AVG", db.Sequelize.col("rates.rating")), "rating"],
+        ],
+        group: ['Course.id', 'Course.title'], // group by id and title
       },
       { raw: true }
     );
     // res.json({ courses });
+    console.log(courses)
     return new ApiResponser(res, { courses })
   } catch (error) {
     next(error);
