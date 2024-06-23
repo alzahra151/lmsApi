@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 ﻿
-=======
-﻿
+
 const db = require("../models")
 const ApiError = require("../helpers/apiError")
 const ApiResponser = require("../helpers/apiResponser")
@@ -91,7 +89,7 @@ async function login(req, res, next) {
                 throw new ApiError({ 'password': req.t("wrongPassword") }, 401)
             } else {
                 const token = jwt.sign({ id: user.id, role_id: user.role_id }
-                    ,`${process.env.SECRET_KEY}`,
+                    , `${process.env.SECRET_KEY}`,
                     {
                         expiresIn: "10d"
                     })
@@ -153,4 +151,4 @@ module.exports = {
     updateUser,
     getAllusers
 }
->>>>>>> 6f99815439f3da1c4a3ae6d06de2e67f65693581
+
