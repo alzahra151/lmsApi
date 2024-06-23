@@ -2,61 +2,56 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Exams", {
+    await queryInterface.createTable("Enrollments", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      title: {
-        type: Sequelize.STRING,
-      },
-      alt_title: {
-        type: Sequelize.STRING,
-      },
-      start_date: {
-        type: Sequelize.DATE,
-      },
-      end_date: {
-        type: Sequelize.DATE,
-      },
-      duration: {
+      student_id: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
-      },
-
-      lesson_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
         references: {
-          model: "Lesson",
+          model: "User",
           key: "id",
         },
       },
       course_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
         references: {
           model: "Course",
           key: "id",
         },
       },
-      class_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Class",
-          key: "id",
-        },
-      },
       teacher_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: "User",
           key: "id",
         },
+      },
+      status: {
+        type: Sequelize.ENUM("pending", "approved", "rejected"),
+        defaultValue: "pending",
+      },
+      price: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
+      is_free: {
+        type: Sequelize.BOOLEAN,
+      },
+      discount: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
+      discount_type: {
+        type: Sequelize.ENUM("percentage", "fixed"),
+        defaultValue: "fixed",
+      },
+      total: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       createdAt: {
         allowNull: false,
@@ -69,6 +64,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Exams");
+    await queryInterface.dropTable("Enrollments");
   },
 };

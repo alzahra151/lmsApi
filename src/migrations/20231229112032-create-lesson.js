@@ -34,10 +34,11 @@ module.exports = {
       },
       duration: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       is_free: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false,
+        defaultValue: true,
       },
       createdAt: {
         allowNull: false,

@@ -4,29 +4,34 @@ const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const helmet = require("helmet");
-// const cookiesParse = require("cookies-parser");
+const cookieParser = require("cookie-parser");
+
 const path = require("path");
 const db = require("./models");
 const routes = require("./routes");
+const translationMiddleware = require("./translations");
+const ErrorHandler = require("./middleware's/errorHandler");
 
 // create app
 const app = express();
 app.use(cors({ origin: "*" }));
 app.use(helmet());
-// app.use(cookiesParse());
+app.use(cookieParser());
 
 app.set(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(translationMiddleware);
 
 app.use(routes);
 
-// app.use("*", (req, res, next) => {
-//   const error = new Error("METHOD NOT ALLOWED!!");
-//   next(error);
-//   // next(throw nee Er)
-// });
+app.use("*", (req, res, next) => {
+  const error = new Error("METHOD NOT ALLOWED!!");
+  next(error);
+  // next(throw nee Er)
+});
 
+app.use(ErrorHandler);
 // create server
 const server = http.createServer(app);
 

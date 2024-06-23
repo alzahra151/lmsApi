@@ -1,5 +1,5 @@
 const db = require("../../models");
-
+const ApiResponser = require("../../helpers/apiResponser");
 
 async function getAllcourses(req, res, next) {
   try {
@@ -63,8 +63,6 @@ async function getAllcourses(req, res, next) {
     next(error);
   }
 }
-
-/// user controller
 async function getAllusers(req, res, next) {
   try {
     const users = await db.User.findAll(
@@ -85,13 +83,12 @@ async function getAllusers(req, res, next) {
       },
       { raw: true }
     );
-    res.json({ users });
+    return new ApiResponser(res, { users });
   } catch (error) {
     next(error);
   }
 }
-
-
 module.exports = {
-  getAllcourses, getAllusers
-}
+  getAllcourses,
+  getAllusers,
+};

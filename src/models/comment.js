@@ -18,7 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "lesson_id",
         as: "lesson",
       });
-      Comment.hasMany(models.Comment, { as: "comments" });
+      Comment.hasMany(models.Comment, {
+        foreignKey: "comment_id",
+        as: "comments",
+      });
     }
   }
   Comment.init(

@@ -1,11 +1,8 @@
 const { Router } = require("express");
 const adminRoutes = require("./admin");
 const routes = Router();
-const studentRoutes = require("./student/studentRoutes")
-// const userRoutes = require("../routes/user")
+const studentRoutes = require("./student/studentRoutes");
 
 routes.use("/admin", adminRoutes);
-routes.use("/", studentRoutes)
-// routes.use("/user", userRoutes)
-
+routes.use("/", studentRoutes);
 module.exports = routes;
