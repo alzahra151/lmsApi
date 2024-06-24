@@ -16,22 +16,22 @@ async function getAllCourses(req, res, next) {
           {
             model: db.Lesson,
             as: "lessons",
-            include: [
-              {
-                model: db.Attachment,
-                as: "attachments",
-              },
-              // {
-              //   model: db.Comment,
-              //   as: "comments",
-              //   include: [
-              //     {
-              //       model: db.Comment,
-              //       as: "comment",
-              //     },
-              //   ],
-              // },
-            ],
+            // include: [
+            //   {
+            //     model: db.Attachment,
+            //     as: "attachments",
+            //   },
+            //   // {
+            //   //   model: db.Comment,
+            //   //   as: "comments",
+            //   //   include: [
+            //   //     {
+            //   //       model: db.Comment,
+            //   //       as: "comment",
+            //   //     },
+            //   //   ],
+            //   // },
+            // ],
           },
           {
             model: db.Rate,
