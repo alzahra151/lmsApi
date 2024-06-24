@@ -44,7 +44,7 @@ async function getAllCourses(req, res, next) {
           [db.Sequelize.fn('SUM', db.Sequelize.col('lessons.duration')), 'totalDuration'],
           [db.Sequelize.fn('AVG', db.Sequelize.col('rates.rating')), 'averageRating'],
         ],
-        group: ['Course.id', 'Course.title', 'lessons.id', 'lessons.duration', 'rates.id', 'rates.rating'], // Group by id and title
+        group: ['Course.id', 'Course.title', 'lessons.id', 'lessons.duration', 'rates.id', 'rates.rating', 'lessons->attachments.id'], // Group by id and title
       },
       { raw: true }
     );
