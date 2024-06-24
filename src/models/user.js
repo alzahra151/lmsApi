@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       user_type: DataTypes.ENUM("admin", "student", "teacher", "super_admin"),
       photo: DataTypes.TEXT,
+      brief: DataTypes.STRING,
       mobile: {
         type: DataTypes.STRING,
         allowNull: false,

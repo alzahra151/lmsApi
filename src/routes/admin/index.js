@@ -25,6 +25,8 @@ adminRoutes.route("/courses").get(adminController.getAllcourses);
 adminRoutes.route("/course/:id").get(adminController.getCourseById);
 
 adminRoutes.route("/users").get(userController.getAllusers);
+adminRoutes.route("/teachers").get(userController.getTeachers);
+
 adminRoutes.route("/add-user").post(
     authorization,
     // checkPermissions.checkPermission('add_user'),

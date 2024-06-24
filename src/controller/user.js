@@ -17,7 +17,8 @@ async function addUser(req, res, next) {
         mobile,
         class_id,
         photo,
-        role_id
+        role_id,
+        brief
     } = req.body
     try {
         if (req.file) photo = `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}`
@@ -37,7 +38,8 @@ async function addUser(req, res, next) {
             mobile,
             class_id,
             role_id,
-            photo
+            photo,
+            brief
         })
         return new ApiResponser(res, { user })
     } catch (err) {
@@ -144,11 +146,39 @@ async function updateUser(req, res, next) {
         next(error)
     }
 }
+async function getTeachers(req, res, next) {
+    try {
+
+        const teachers = await db.User.findAll(
+            {
+                where: {
+                    user_type: "teacher"
+                },
+                include: [
+
+                    {
+                        model: db.Role,
+                        as: "role",
+                    },
+                ],
+                attributes: {
+                    exclude: ["password"],
+                },
+
+            },
+        );
+
+        return new ApiResponser(res, { teachers })
+    } catch (error) {
+        next(error);
+    }
+}
 module.exports = {
     addUser,
     login,
     getUserById,
     updateUser,
-    getAllusers
+    getAllusers,
+    getTeachers
 }
 
