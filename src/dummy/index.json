@@ -4,7 +4,7 @@
             "first_name": "Super",
             "last_name": "Admin",
             "mobile": "+201112345671",
-            "role_id": 1,
+            "role_id": 3,
             "class_id": null,
             "user_type": "admin",
             "createdAt":"2024-06-24",
@@ -14,7 +14,7 @@
             "first_name": "إبراهيم",
             "last_name": "الدسوقي",
             "mobile": "01115302646",
-            "role_id": 2,
+            "role_id": 4,
             "class_id": null,
             "user_type": "teacher",
              "createdAt":"2024-06-24",
@@ -26,7 +26,7 @@
             "mobile": "01001037966 ",
             "user_type": "teacher",
             "class_id": null,
-            "role_id": 2,
+            "role_id": 4,
              "createdAt":"2024-06-24",
             "updatedAt":"2024-06-24"
         }
