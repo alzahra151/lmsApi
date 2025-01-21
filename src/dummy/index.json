@@ -14,7 +14,7 @@
             "first_name": "إبراهيم",
             "last_name": "الدسوقي",
             "mobile": "01115302646",
-            "role_id": 4,
+            "role_id": 2,
             "class_id": null,
             "user_type": "teacher",
              "createdAt":"2024-06-24",
@@ -26,7 +26,7 @@
             "mobile": "01001037966 ",
             "user_type": "teacher",
             "class_id": null,
-            "role_id": 4,
+            "role_id": 2,
              "createdAt":"2024-06-24",
             "updatedAt":"2024-06-24"
         }

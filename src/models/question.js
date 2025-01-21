@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Question.init(
     {
-      title: DataTypes.TEXT,
+      title: DataTypes.TEXT('long'),
       alt_title: DataTypes.TEXT,
       degree: DataTypes.INTEGER,
       exam_id: DataTypes.INTEGER,

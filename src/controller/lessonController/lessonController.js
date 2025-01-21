@@ -101,7 +101,37 @@ async function deleteLessonById(req, res, next) {
     next(error);
   }
 }
+async function getCourseLessons(req, res, next) {
+  const student_id = req.user.id
+  console.log(student_id)
+  const courseId = req.params.id; // Assuming course ID is passed as a URL parameter
 
+  try {
+    // Check if student is enrolled in the course
+    const enrollment = await db.Enrollment.findOne({
+      where: {
+        student_id: student_id,
+        course_id: courseId,
+        status: 'approved'
+      }
+    });
+
+    // Fetch lessons based on enrollment status and free status
+    const lessons = await db.Lesson.findAll({
+      where: {
+        course_id: courseId,
+        [db.Sequelize.Op.or]: [
+          { is_free: true },
+          enrollment ? {} : { id: null } // If not enrolled, return only free lessons
+        ]
+      }
+    });
+    // res.json(lessons);
+    return new ApiResponser(res, { lessons })
+  } catch (error) {
+    next(error);
+  }
+}
 
 module.exports = {
   getAllLessons,
@@ -109,5 +139,6 @@ module.exports = {
   addLesson,
   updateLessonById,
   deleteLessonById,
-  sseConfig
+  sseConfig,
+  getCourseLessons
 };

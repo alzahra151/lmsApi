@@ -12,11 +12,12 @@ module.exports = (sequelize, DataTypes) => {
       Course.hasMany(models.Lesson, { as: "lessons", foreignKey: "course_id" });
       Course.hasMany(models.Rate, { as: "rates", foreignKey: "course_id" });
       Course.hasMany(models.Exam, { as: "exams", foreignKey: "course_id" });
-      Course.hasMany(models.Enrollment, { foreignKey: "course_id" });
+      Course.hasMany(models.Enrollment, { foreignKey: "course_id" ,as:"enrollments"});
       Course.belongsTo(models.User, {
         as: "teacher",
         foreignKey: "teacher_id",
       });
+      Course.belongsTo(models.Class, { as: "class", foreignKey: "class_id" });
       // Course.hasOne(models.Class, { foreignKey: "class_id", as: "class" });
     }
   }
@@ -29,10 +30,11 @@ module.exports = (sequelize, DataTypes) => {
       start_date: DataTypes.DATE,
       end_date: DataTypes.DATE,
       is_free: DataTypes.BOOLEAN,
+      is_enrolled: DataTypes.BOOLEAN,
       price: {
         type: DataTypes.INTEGER,
         allowNull: true,    // Allow NULL
-//        defaultValue: 0,    // Default to 0
+        //        defaultValue: 0,    // Default to 0
       },
       discount: DataTypes.INTEGER,
       discount_type: DataTypes.ENUM("percentage", "fixed"),

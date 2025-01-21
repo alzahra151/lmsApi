@@ -28,7 +28,7 @@ adminRoutes.route("/users").get(userController.getAllusers);
 adminRoutes.route("/teachers").get(userController.getTeachers);
 
 adminRoutes.route("/add-user").post(
-    authorization,
+    // authorization,
     // checkPermissions.checkPermission('add_user'),
     upload.single("photo"),
     // adduserValidator(),
@@ -42,9 +42,9 @@ adminRoutes.route("/user/:id").get(userController.getUserById).patch(
     validate,
     userController.updateUser
 );
-
+adminRoutes.get("/exams", getExams);
 adminRoutes.get("/exams/:id", getExam);
-adminRoutes.post("/exams/add", checkCreateExamScheme, validate, createNewExam);
+adminRoutes.post("/exams/add", authorization, checkCreateExamScheme, validate, createNewExam);
 adminRoutes.get('/course/:id/exam', getCourserExams)
 adminRoutes.get('/exam/:id/students', getExamStudents)
 

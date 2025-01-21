@@ -10,18 +10,32 @@ const db = require("./models");
 const routes = require("./routes");
 const translationMiddleware = require("./translations");
 const ErrorHandler = require("./middleware's/errorHandler");
-
+const setupSocketServer = require('./controller/socket');
 // create app
 const app = express();
-app.use(cors({ origin: "*" }));
-app.use(helmet());
+app.use(cors());
+// HELMET Content Security Policy
+app.use(
+  helmet.contentSecurityPolicy({
+    useDefaults: true,
+    directives: {
+      'img-src': ["'self' data:", '*.google-analytics.com', '*.vimeocdn.com'],
+      'script-src': ["'self'", '*.polyfill.io', "'unsafe-eval'", "'unsafe-inline'"],
+      'default-src': ["'self'", '*.google-analytics.com', '*.gstatic.com', '*.googleapis.com', 'vimeo.com', '*.vimeo.com']
+    }
+  })
+);
+app.use((req, res, next) => {
+  res.removeHeader("Cross-Origin-Embedder-Policy");
+  next();
+});
 app.use(cookieParser());
 
 app.set(express.static(path.join(__dirname, "public")));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // app.use(bodyParser.json());
 app.use(translationMiddleware);
 
@@ -36,6 +50,12 @@ app.use("*", (req, res, next) => {
 app.use(ErrorHandler);
 // create server***
 const server = http.createServer(app);
+// setupSocketServer(server, {
+//   cors: {
+//     origin: '*', // Allow all origins
+//     methods: ['GET', 'POST'],
+//   },
+// });
 
 async function connectToDatabase() {
   try {

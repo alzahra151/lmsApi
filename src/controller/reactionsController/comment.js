@@ -3,10 +3,12 @@ const ApiResponser = require("../../helpers/apiResponser")
 const db = require("../../models")
 
 async function addComment(req, res, next) {
+    console.log(req.user)
     const commentData = req.body
     const userId = req.user.id
-
     commentData.user_id = userId
+    // commentData.user_id = 43
+
     try {
         const newComment = await db.Comment.create(commentData)
         return new ApiResponser(res, { newComment })
@@ -18,12 +20,22 @@ async function getLessonComments(req, res, next) {
     const lessonId = req.params.lesson_id
     try {
         const comments = await db.Comment.findAll({
-            where: { lesson_id: lessonId },
+            where: {
+                lesson_id: lessonId,
+                comment_id: null
+            },
 
             include: [
                 {
                     model: db.Comment,
                     as: 'replies',
+                    include: [
+                        {
+                            model: db.User,
+                            as: 'user',
+                            exclude: ['password']
+                        }
+                    ]
                 },
                 {
                     model: db.Lesson,
@@ -52,6 +64,33 @@ async function getCommentReplies(req, res, next) {
         next(err)
     }
 }
+async function addReplay(req, res, next) {
+
+    try {
+        // const { body, user_id, lesson_id } = req.body;
+        const commentData = req.body
+        const { commentId } = req.params;
+        console.log(commentId)
+        const userId = req.user.id
+
+        commentData.user_id = userId
+        // commentData.user_id = 43
+        commentData.comment_id = commentId
+        console.log()
+        const newReply = await db.Comment.create(commentData
+            // {
+            // body,
+            // user_id,
+            // lesson_id,
+            // comment_id: commentId
+            // }
+        );
+        res.json(newReply);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+
+}
 async function deleteComment(req, res, next) {
     const commentId = req.params.comment_id
     try {
@@ -70,6 +109,7 @@ module.exports = {
     addComment,
     getLessonComments,
     getCommentReplies,
-    deleteComment
+    deleteComment,
+    addReplay
 
 }

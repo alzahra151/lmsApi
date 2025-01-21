@@ -19,15 +19,17 @@ async function createNewExam(req, res, next) {
       questions,
     } = req.body;
     let answers = [];
-
+    console.log(questions)
     const { id, user_type } = req.user || {};
+    console.log(req.user)
+    if (!id) throw new ApiError("المعلم لا يجب ان يكون فارغ يجب تسجيل الدخول ")
+    // if (user_type === "teacher") {
 
-    if (user_type === "teacher") {
-      teacher_id = id;
-    }
-
+    // }
+    // con
+    teacher_id = id; console.log(teacher_id)
     const [teacher, course, currentClass, lessons] = await Promise.all([
-      db.User.findOne({ where: { id: teacher_id, user_type: "teacher" } }),
+      db.User.findOne({ where: { id: teacher_id } }),
       db.Course.findOne({ where: { id: course_id } }),
       db.Class.findOne({ where: { id: class_id } }),
       db.Lesson.findAll({ where: { id: { [Op.in]: lesson_ids } } }),
@@ -123,11 +125,12 @@ async function createNewExam(req, res, next) {
 async function startExam(req, res, next) {
   try {
     const { id: exam_id } = req.params;
-    // const { id} = req.user;
-    const id = 5;
+    const { id } = req.user;
+    // const id = 5;
+    const utcDate = new Date();
+    console.log(utcDate)
 
     if (!exam_id) throw new ApiError(req.t("examIsRequired"), 422);
-
     const exam = await db.Exam.findOne(
       {
         where: { id: exam_id },
@@ -162,7 +165,11 @@ async function startExam(req, res, next) {
     );
 
     if (!exam) throw new ApiError(req.t("invalidExam"), 422);
-
+    if (utcDate.setHours(0, 0, 0, 0) < exam.start_date.setHours(0, 0, 0, 0) || utcDate.setHours(0, 0, 0, 0) > exam.end_date.setHours(0, 0, 0, 0)) throw new ApiError(req.t("invalidExamTime"), 422);
+    console.log(utcDate < exam.start_date)
+    console.log(utcDate > exam.end_date)
+    console.log("utcDate Type:", typeof utcDate);
+    console.log(utcDate, exam.start_date, exam.end_date)
     // throw an error if student already joined to current exam
     const existedStudentExam = await db.StudentExam.findOne(
       { where: { student_id: id, teacher_id: exam?.teacher_id, exam_id } },
@@ -200,7 +207,7 @@ async function startExam(req, res, next) {
       return { studentQuestions, studentExam };
     });
 
-    return new ApiResponser(res, exam);
+    return new ApiResponser(res, { exam });
   } catch (error) {
     next(error);
   }
@@ -209,8 +216,8 @@ async function startExam(req, res, next) {
 async function correctExam(req, res, next) {
   try {
     const { exam_id, questions } = req.body;
-    // const { id } = req.user;
-    const id = 5;
+    const { id } = req.user;
+    // const id = 5;
     let degree = 0,
       duration = 0;
 
@@ -262,7 +269,7 @@ async function correctExam(req, res, next) {
           const questionDegree = is_correct ? originQuestion?.degree : 0;
 
           degree += questionDegree;
-
+          console.log(degree)
           await db.StudentExamQuestions.update(
             {
               degree: questionDegree,
@@ -277,6 +284,7 @@ async function correctExam(req, res, next) {
       );
 
       // update student exam result
+      console.log(degree)
       studentExam.degree = degree;
       studentExam.status = "completed";
       await studentExam.save({ transaction });
@@ -291,8 +299,8 @@ async function correctExam(req, res, next) {
 async function getStudentExam(req, res, next) {
   try {
     const { id } = req.params;
-    // const { id: student_id } = req.user;
-    const student_id = 5;
+    const student_id = req.user.id;
+    // const student_id = 5;
 
     const studentExam = await db.StudentExam.findOne({
       where: {
@@ -424,9 +432,6 @@ async function getExam(req, res, next) {
 }
 async function getExams(req, res, next) {
   try {
-
-    if (!id) throw new ApiError(req.t("invalidId"), 422);
-
     const exams = await db.Exam.findAll({
       include: [
         {
@@ -461,6 +466,8 @@ async function getExams(req, res, next) {
 async function getCourserExams(req, res, next) {
   const course_id = +req.params.id
   console.log(course_id)
+  const utcDate = new Date()
+  console.log(utcDate)
   try {
 
     if (!course_id) throw new ApiError(req.t("invalidId"), 422);
@@ -494,7 +501,7 @@ async function getCourserExams(req, res, next) {
 
     if (!exams) throw new ApiError(req.t("invalidId"), 404);
 
-    return new ApiResponser(res, { exams });
+    return new ApiResponser(res, { exams, utcDate });
   } catch (error) {
     next(error);
   }
@@ -532,7 +539,91 @@ async function getExamStudents(req, res, next) {
     next(error);
   }
 }
+async function getStudentCompleteExams(req, res, next) {
+  try {
+    // const { id } = req.params;
+    const student_id = req.user.id;
+    // const student_id = 5;
+    const utcDate = new Date().toISOString();
+    console.log(utcDate)
+    const exams = await db.StudentExam.findAll({
+      where: {
 
+        student_id,
+      },
+      include: [
+        {
+          model: db.Exam,
+          as: "exam",
+          // attributes: ["title", "alt_title", "id"],
+        },
+        {
+          model: db.User,
+          as: "teacher",
+          attributes: {
+            exclude: ["password", "role_id"],
+          },
+        },
+        {
+          model: db.User,
+          as: "student",
+          attributes: {
+            exclude: ["password"],
+          },
+        },
+        {
+          model: db.StudentExamQuestions,
+          as: "questions",
+          include: [
+            {
+              model: db.Question,
+              as: "question",
+              include: [
+                {
+                  model: db.Answer,
+                  as: "answers",
+                  where: {
+                    is_correct: true,
+                  },
+                },
+              ],
+            },
+            {
+              model: db.Answer,
+              as: "answer",
+            },
+          ],
+        },
+      ],
+      // attributes: {
+      //   include: [
+
+      //     [
+      //       db.sequelize.fn(
+      //         "SUM",
+      //         db.sequelize.col("questions.question.duration")
+      //       ),
+      //       "exam_duration",
+      //     ],
+      //     [
+      //       db.sequelize.fn(
+      //         "SUM",
+      //         db.sequelize.col("questions.question.degree")
+      //       ),
+
+      //       "exam_degree",
+      //     ],
+      //   ],
+      // },
+    });
+
+    if (!exams) throw new ApiError(req.t("invalidExam"), 404);
+
+    return new ApiResponser(res, { exams, utcDate });
+  } catch (error) {
+    next(error);
+  }
+}
 module.exports = {
   createNewExam,
   startExam,
@@ -541,5 +632,6 @@ module.exports = {
   getExam,
   getExams,
   getCourserExams,
-  getExamStudents
+  getExamStudents,
+  getStudentCompleteExams
 };

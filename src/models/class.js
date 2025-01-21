@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       Class.hasMany(models.User, { foreignKey: "class_id", as: "users" });
+      Class.hasMany(models.Course, { as: "courses", foreignKey: "class_id" });
       Class.hasMany(models.Exam, { foreignKey: "class_id", as: "exams" });
     }
   }

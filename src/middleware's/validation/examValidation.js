@@ -19,7 +19,7 @@ const checkCreateExamScheme = [
   //   .withMessage("invalidExamType"),
   body("class_id").notEmpty().withMessage("fieldRequired"),
   body("course_id").notEmpty().withMessage("fieldRequired"),
-  body("teacher_id").notEmpty().withMessage("fieldRequired"),
+  // body("teacher_id").notEmpty().withMessage("fieldRequired"),
   body("lesson_ids")
     .notEmpty()
     .withMessage("fieldRequired")
@@ -85,11 +85,11 @@ const correctExamScheme = [
     .withMessage("arrayType"),
   body("questions.*.id").notEmpty().withMessage("fieldRequired"),
   body("questions.*.answer_id").notEmpty().withMessage("fieldRequired"),
-  body("questions.*.duration")
-    .notEmpty()
-    .withMessage("fieldRequired")
-    .isInt()
-    .withMessage("invalidNumberType"),
+  // body("questions.*.duration")
+  //   .notEmpty()
+  //   .withMessage("fieldRequired")
+  //   .isInt()
+  //   .withMessage("invalidNumberType"),
 ];
 
 module.exports = { checkCreateExamScheme, correctExamScheme };

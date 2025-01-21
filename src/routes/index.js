@@ -21,7 +21,7 @@ routes
   .post(loginValidator(), validate, checkErrorFromValidation, userController.login);
 
 routes.use("/api/admin", adminRoutes);
-// routes.use("/", studentRoutes);
+routes.use("/api/student", studentRoutes);
 routes.route("/api/login").post(loginValidator(), userController.login);
 routes.use("/api/courses", courseRoutes);
 routes.use("/api/lessons", lessonRoutes);

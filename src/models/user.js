@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       role_id: DataTypes.INTEGER,
       class_id: DataTypes.INTEGER,
+      subject: DataTypes.STRING
     },
     {
       sequelize,

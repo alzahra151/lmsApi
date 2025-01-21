@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken")
 const { getPagination, getPagingData } = require("../controller/pagination/pagination")
 
 async function addUser(req, res, next) {
+    console.log(req.body)
     let {
         first_name,
         last_name,
@@ -18,15 +19,17 @@ async function addUser(req, res, next) {
         class_id,
         photo,
         role_id,
-        brief
+        brief,
+        subject
     } = req.body
     try {
         if (req.file) photo = `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}`
         if (!user_type) throw new ApiError("نوع المستخدم غير موجود")
         const role = await db.Role.findAll({
             limit: 1,
-            where: { alt_name: user_type }
+            where: { name: user_type }
         });
+        console.log(role)
         if (!role[0]) throw new ApiError("صلاحية المستخدم غير موجودة ")
         role_id = role[0].id;
         const user = await db.User.create({
@@ -39,7 +42,8 @@ async function addUser(req, res, next) {
             class_id,
             role_id,
             photo,
-            brief
+            brief,
+            subject
         })
         return new ApiResponser(res, { user })
     } catch (err) {
@@ -90,11 +94,13 @@ async function login(req, res, next) {
             if (!verfiypassword) {
                 throw new ApiError({ 'password': req.t("wrongPassword") }, 401)
             } else {
-                const token = jwt.sign({ id: user.id, role_id: user.role_id }
+                const token = jwt.sign({ id: user.id, role_id: user.role_id, user_type: user.user_type }
                     , `${process.env.SECRET_KEY}`,
                     {
                         expiresIn: "10d"
                     })
+              
+
                 return new ApiResponser(res, { token })
             }
         }

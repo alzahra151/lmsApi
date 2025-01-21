@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Answer.init(
     {
-      title: DataTypes.TEXT,
+      title: DataTypes.TEXT('long'),
       is_correct: DataTypes.BOOLEAN,
       question_id: DataTypes.INTEGER,
       exam_id: DataTypes.INTEGER,

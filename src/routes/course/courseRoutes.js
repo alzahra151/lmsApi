@@ -13,7 +13,7 @@ const upload = require("../../controller/multer");
 courseRoutes.post("/", upload.single("poster"), authorization, courseController.addCourse);
 courseRoutes.route("/courses").get(courseController.getAllCourses)
 
-courseRoutes.get("/:id", courseController.getCourseById);
+courseRoutes.get("/:id", authorization, courseController.getCourseById);
 courseRoutes.put(
   "/:id",
   updateCourseValidator(),

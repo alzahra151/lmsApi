@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 async function authorization(req, res, next) {
   try {
     const token = req.header("authorization");
+    // const token = req.cookies.token;
     const secure = /bearer+/gi.test(token);
 
     if (!token) throw new ApiError("Token is required", 401);
