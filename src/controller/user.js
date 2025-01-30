@@ -23,6 +23,12 @@ async function addUser(req, res, next) {
         subject
     } = req.body
     try {
+        const existedStudent = await db.User.findOne(
+            { where: { mobile } },
+              { raw: true }
+        );
+        if (existedStudent)
+            throw new ApiError(req.t("FoundUser"), 422);
         if (req.file) photo = `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}`
         if (!user_type) throw new ApiError("نوع المستخدم غير موجود")
         const role = await db.Role.findAll({

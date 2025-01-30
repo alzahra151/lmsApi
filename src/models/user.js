@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       mobile: {
         type: DataTypes.STRING,
         allowNull: false,
-        // unique: true,
+        unique: true,
       },
       role_id: DataTypes.INTEGER,
       class_id: DataTypes.INTEGER,

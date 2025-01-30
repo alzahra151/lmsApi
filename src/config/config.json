@@ -4,21 +4,38 @@
     "password": "Itop@12345678",
     "database": "itop_academy_db",
     "host": "127.0.0.1",
-    "dialect": "mysql"
-  
+    "dialect": "mysql",
+    "pool": {
+      "max": 50,
+      "min": 10,
+      "idle": 5000,
+      "acquire": 20000
+    }
   },
   "test": {
     "username": "Itop",
     "password": "Itop@12345678",
     "database": "itop_academy_db",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "pool": {
+      "max": 50,
+      "min": 10,
+      "idle": 5000,
+      "acquire": 20000
+    }
   },
   "production": {
     "username": "Itop",
     "password": "Itop@12345678",
     "database": "itop_academy_db",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "pool": {
+      "max": 50,
+      "min": 10,
+      "idle": 5000,
+      "acquire": 20000
+    }
   }
 }
